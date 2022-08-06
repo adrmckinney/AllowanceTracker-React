@@ -77,7 +77,6 @@ const LoginPage = () => {
                 title={'Sign In'}
                 icon={'lock'}
                 customClassName={'w-full group'}
-                customIconStyle={'h-5 w-5 text-sky-500 group-hover:text-sky-400'}
               /> */}
             </div>
           </form>
