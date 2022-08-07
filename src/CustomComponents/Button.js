@@ -1,22 +1,24 @@
 import { buttonTheme } from '../configs/global-styles'
 import { icons } from '../configs/icons'
+import ConditionalRender from './conditional-render'
 
 const Button = ({
   as: CustomTag = 'button',
-  type,
+  type = 'button',
   title,
-  size,
-  status,
-  disabled,
+  size = 'md',
+  status = 'primary',
+  disabled = false,
   icon,
+  iconStatus = '',
   onClick,
-  to,
+  to = '/',
   customClassName,
   overrideButtonStyle,
   customIconStyle,
   overrideIconStyle,
   role,
-  labelPosition,
+  labelPosition = 'center',
   children,
   ariaControls,
   ariaExpanded,
@@ -24,13 +26,14 @@ const Button = ({
   srOnly,
   ref,
   onKeyPress,
+  relativeGroup = false,
 }) => {
   return (
     <CustomTag
       type={type}
-      to={to || '/'}
+      to={to}
       ref={ref}
-      disabled={disabled ?? false}
+      disabled={disabled}
       onClick={onClick}
       onKeyPress={onKeyPress}
       style={overrideButtonStyle}
@@ -42,13 +45,28 @@ const Button = ({
         'inline-flex',
         'rounded-md',
         'shadow-sm',
-        `${SIZES[size] ?? SIZES['medium']}`,
-        `${STATUSES[status] ?? STATUSES['primary']}`,
-        `${LABEL_POSITION[labelPosition] ?? LABEL_POSITION['center']}`,
+        'border',
+        'border-transparent',
+        'focus:outline-none',
+        'focus:ring-2',
+        'focus:ring-offset-2',
+        'leading-4',
+        `${SIZES[size]}`,
+        // `${STATUSES[status]}`,
+        `${buttonTheme[status]}`,
+        `${LABEL_POSITION[labelPosition]}`,
+        `${relativeGroup ? 'relative group' : ''}`,
         `${customClassName}`,
       ].join(' ')}
     >
-      {icons({ customIconStyle, overrideIconStyle, size })[0][icon]}
+      <ConditionalRender
+        condition={relativeGroup}
+        falseRender={icons({ customIconStyle, overrideIconStyle, size, status })[0][icon]}
+      >
+        <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
+          {icons({ customIconStyle, overrideIconStyle, size, iconStatus })[0][icon]}
+        </span>
+      </ConditionalRender>
       {title}
       {children}
       {!!srOnly && <span className='sr-only'>{srOnly}</span>}
@@ -59,12 +77,14 @@ const Button = ({
 export default Button
 
 const SIZES = {
-  extraSmall: ['px-1', 'py-0.5', 'text-xs', 'items-center'].join(' '),
-  small: ['px-3', 'py-2', 'text-sm', 'leading-4', 'items-center'].join(' '),
-  medium: ['px-4', 'py-2', 'text-base', 'font-medium', 'items-center'].join(' '),
-  large: ['px-6', 'py-3', 'text-lg', 'font-medium', 'items-center'].join(' '),
+  xs: ['px-1', 'py-0.5', 'text-xs', 'items-center'].join(' '),
+  sm: ['px-3', 'py-2', 'text-sm', 'leading-4', 'items-center'].join(' '),
+  md: ['px-4', 'py-2', 'text-sm', 'font-medium', 'items-center'].join(' '),
+  lg: ['px-4', 'py-2', 'text-base', 'font-medium', 'items-center'].join(' '),
+  xl: ['px-6', 'py-3', 'text-lg', 'font-medium', 'items-center'].join(' '),
   text: ['py-2', 'px-4', 'text-sm'].join(' '),
   mobileHamburger: 'p-2',
+  link: 'p-0 text-sm',
   null: '',
 }
 
@@ -75,45 +95,6 @@ const LABEL_POSITION = {
 }
 
 const STATUSES = {
-  primary: [
-    `text-${buttonTheme.primary.text}`,
-    `bg-${buttonTheme.primary.bgColor}`,
-    `hover:bg-${buttonTheme.primary.hoverBgColor}`,
-    'border',
-    'border-transparent',
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-offset-2',
-    `focus:ring-${buttonTheme.primary.focus}`,
-  ].join(' '),
-  secondary: [
-    `text-${buttonTheme.secondary.text}`,
-    `bg-${buttonTheme.secondary.bgColor}`,
-    `hover:bg-${buttonTheme.secondary.hoverBgColor}`,
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-offset-2',
-    `focus:ring-${buttonTheme.secondary.focus}`,
-  ].join(' '),
-  cancel: [
-    `text-${buttonTheme.cancel.text}`,
-    `bg-${buttonTheme.cancel.bgColor}`,
-    `hover:bg-${buttonTheme.cancel.hoverBgColor}`,
-    'border',
-    'border-gray-300',
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-offset-2',
-    `focus:ring-${buttonTheme.cancel.focus}`,
-  ].join(' '),
-  CTA: [
-    'text-snow',
-    'bg-forestGreen',
-    'hover:bg-russianGreen',
-    'border',
-    'border-transparent',
-  ].join(' '),
-  text: ['block', 'text-gray-700', 'hover:bg-gray-100'].join(' '),
   mobileHamburger: [
     'bg-mediumPurple',
     'inline-flex',
@@ -131,5 +112,3 @@ const STATUSES = {
   icon: 'bg-transparent',
   null: '',
 }
-
-console.log('STATUSES[primary]', STATUSES['primary'])
