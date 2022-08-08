@@ -6,9 +6,11 @@ import ConditionalRender from './conditional-render'
 import { MailIcon } from '@heroicons/react/solid'
 import HorizontalLayout from '../CustomComponents/horizontal-layout'
 import { fontThemes, inputThemes } from '../configs/global-styles'
+import InputErrorMessage from './input-error-message'
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 
 type Props = {
-  validation?: Boolean,
+  fieldValidationIcon?: Boolean,
   placeholder?: String,
   type: String,
   name: String,
@@ -27,12 +29,16 @@ type Props = {
   textAreaHeight?: String,
   rows?: Number,
   ref?: Object,
+  errorMessage?: String,
+  touched?: Boolean,
+  showPassword?: Boolean,
+  setShowPassword?: () => {},
   onChange: () => {},
   onKeyDown?: () => {},
 }
 
 const Input = ({
-  validation = false,
+  fieldValidationIcon = false,
   placeholder = '',
   type = '',
   name = '',
@@ -51,6 +57,10 @@ const Input = ({
   textAreaHeight = '',
   rows = 4,
   ref,
+  errorMessage,
+  touched,
+  showPassword,
+  setShowPassword,
   onChange,
   onKeyDown,
 }: Props) => {
@@ -88,7 +98,7 @@ const Input = ({
                 ref={ref}
                 rows={rows}
                 name={name}
-                id={id}
+                id={`${id}-textarea`}
                 placeholder={placeholder}
                 value={value}
                 style={{ ...inputStyles }}
@@ -124,7 +134,11 @@ const Input = ({
               {label}
             </label>
           </ConditionalRender>
-          <div className='mt-1 relative rounded-md shadow-sm'>
+          <div
+            className={`${
+              name === 'password' || name === 'confirm_password' ? 'flex' : 'relative'
+            } mt-1 shadow-sm`}
+          >
             <ConditionalRender condition={icon}>
               <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                 {ICONS[icon]}
@@ -135,32 +149,50 @@ const Input = ({
               type={type}
               name={name}
               data-id={dataId}
-              id={id}
+              id={`${id}-input`}
               placeholder={placeholder}
               value={value}
-              aria-invalid={validation.toString()}
+              aria-invalid={fieldValidationIcon.toString()}
               aria-describedby={`${name}-${inputThemes[theme]['error']}`}
               style={{ ...inputStyles }}
               onChange={onChange}
+              onBlur={touched}
               className={[
                 icon ? 'pl-10' : 'px-3',
                 'py-2 ',
                 fontThemes.inputText,
                 inputThemes[theme],
                 'block w-full',
+                `${
+                  name === 'password' || name === 'confirm_password'
+                    ? 'border-r-0 rounded-r-none'
+                    : ''
+                }`,
               ].join(' ')}
             />
-            <ConditionalRender condition={validation}>
+            <ConditionalRender condition={name === 'password' || name === 'confirm_password'}>
+              <button
+                type='button'
+                tabIndex='-1'
+                className={['px-3 py-2', inputThemes[theme], 'border-l-0 rounded-l-none'].join(' ')}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className='w-4 h-4' />
+                ) : (
+                  <EyeIcon className='w-4 h-4' />
+                )}
+              </button>
+            </ConditionalRender>
+            <ConditionalRender condition={fieldValidationIcon}>
               <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
                 <ExclamationCircleIcon className='h-5 w-5 text-red-500' aria-hidden='true' />
               </div>
             </ConditionalRender>
           </div>
         </div>
-        <ConditionalRender condition={validation}>
-          <p className='mt-2 text-sm text-red-600' id={`${name}-${inputThemes[theme]['error']}`}>
-            Your password must be less than 4 characters.
-          </p>
+        <ConditionalRender condition={!!errorMessage && fieldValidationIcon}>
+          <InputErrorMessage name={name} theme={theme} errorMessage={errorMessage} />
         </ConditionalRender>
       </ConditionalRender>
     </>

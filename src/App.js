@@ -1,7 +1,9 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import ChoresPage from './Pages/ChoresPage'
 import LoginPage from './Pages/LoginPage'
+import RegisterationPage from './Pages/RegisterationPage'
 import TransactionsPage from './Pages/TransactionsPage'
+import UserDetailsPage from './Pages/UserDetailsPage'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path='/transactions' element={<TransactionsPage />} />
         <Route path='/chores' element={<ChoresPage />} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/registration' element={<RegisterationPage />} />
+        <Route path='/user/:id' element={<UserDetailsPage />} />
       </Routes>
     </div>
   )
