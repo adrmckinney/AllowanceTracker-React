@@ -9,20 +9,22 @@ import { useRegister as register } from '../api/useRegister'
 import useRegisterValidation from '../configs/ValidationRules/useRegisterValidation'
 import ConditionalRender from '../CustomComponents/conditional-render'
 import InputErrorMessage from '../CustomComponents/input-error-message'
+import useLoginValidation from '../configs/ValidationRules/useLoginValidation'
 
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
-  const [touched, setTouched] = useState(false)
-  const errors = useRegisterValidation(input)
+  const [touched, setTouched] = useState({ username: false, password: false })
+  const { checkForFieldErrors, errors, filterErrorsByField } = useRegisterValidation(input, touched)
   const navigate = useNavigate()
-
-  console.log('input', input)
+  // console.log('input?.username', input?.username)
+  // console.log('usernameErrors', usernameErrors)
+  // console.log('passwordErrors', passwordErrors)
   console.log('errors', errors)
-
   const handleSubmit = e => {
     e.preventDefault()
+    checkForFieldErrors()
     register(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
         setTouched(false)
@@ -31,6 +33,15 @@ const RegistrationPage = () => {
         navigate(`../user/${data.id}`)
       }
     })
+  }
+
+  const handleTouched = ({ name }) => {
+    setTouched(touched => ({
+      ...touched,
+      [name]: true,
+    }))
+
+    checkForFieldErrors(name)
   }
 
   return (
@@ -56,7 +67,7 @@ const RegistrationPage = () => {
               required
               value={input?.name}
               onChange={e => handleChange(e.target)}
-              touched={() => setTouched(true)}
+              touched={e => handleTouched(e.target)}
               // fieldValidationIcon={nameError.value}
             />
 
@@ -69,8 +80,9 @@ const RegistrationPage = () => {
               required
               value={input?.username}
               onChange={e => handleChange(e.target)}
-              touched={() => setTouched(true)}
-              //   fieldValidationIcon={usernameError.value}
+              touched={e => handleTouched(e.target)}
+              errors={filterErrorsByField('username')}
+              // fieldValidationIcon={usernameErrors?.[0]?.value}
             />
 
             <Input
@@ -82,7 +94,7 @@ const RegistrationPage = () => {
               required
               value={input?.email}
               onChange={e => handleChange(e.target)}
-              touched={() => setTouched(true)}
+              touched={e => handleTouched(e.target)}
               // fieldValidationIcon={emailError.value}
             />
 
@@ -97,7 +109,8 @@ const RegistrationPage = () => {
               setShowPassword={setShowPassword}
               value={input?.password}
               onChange={e => handleChange(e.target)}
-              touched={() => setTouched(true)}
+              touched={e => handleTouched(e.target)}
+              errors={filterErrorsByField('password')}
               //   fieldValidationIcon={passwordError.value}
             />
 
@@ -112,33 +125,10 @@ const RegistrationPage = () => {
               setShowPassword={setShowConfirmPassword}
               value={input?.confirm_password}
               onChange={e => handleChange(e.target)}
-              touched={() => setTouched(true)}
+              touched={e => handleTouched(e.target)}
+              errors={filterErrorsByField('confirm_password')}
               // fieldValidationIcon={confirmPasswordError.value}
             />
-
-            {/* <ConditionalRender condition={usernameError.value}>
-              <InputErrorMessage
-                name={'username'}
-                theme={'stackedBottom'}
-                errorMessage={usernameError?.message}
-              />
-            </ConditionalRender>
-
-            <ConditionalRender condition={passwordError.value}>
-              <InputErrorMessage
-                name={'password'}
-                theme={'stackedBottom'}
-                errorMessage={passwordError?.message}
-              />
-            </ConditionalRender>
-
-            <ConditionalRender condition={!!apiErrors && !touched}>
-              <InputErrorMessage
-                name={'apiError'}
-                theme={'stackedBottom'}
-                errorMessage={apiErrors}
-              />
-            </ConditionalRender> */}
 
             <div>
               <Button

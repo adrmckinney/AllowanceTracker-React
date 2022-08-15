@@ -62,6 +62,10 @@ const LoginPage = () => {
                 type={showPassword ? 'text' : 'password'}
                 id='password'
                 theme='stackedBottom'
+                inputStyles={{
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                }}
                 required
                 placeholder='Password'
                 showPassword={showPassword}

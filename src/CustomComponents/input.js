@@ -22,6 +22,7 @@ type Props = {
   labelRight?: any,
   defaultValue?: String,
   value: String,
+  required: Boolean,
   icon?: String,
   inputStyles?: Object,
   labelStyles?: Object,
@@ -29,7 +30,7 @@ type Props = {
   textAreaHeight?: String,
   rows?: Number,
   ref?: Object,
-  errorMessage?: String,
+  errors?: Object,
   touched?: Boolean,
   showPassword?: Boolean,
   setShowPassword?: () => {},
@@ -50,6 +51,7 @@ const Input = ({
   labelRight = null,
   defaultValue = '',
   value = '',
+  required = false,
   icon = '',
   inputStyles,
   labelStyles,
@@ -57,7 +59,7 @@ const Input = ({
   textAreaHeight = '',
   rows = 4,
   ref,
-  errorMessage,
+  errors,
   touched,
   showPassword,
   setShowPassword,
@@ -101,6 +103,7 @@ const Input = ({
                 id={`${id}-textarea`}
                 placeholder={placeholder}
                 value={value}
+                required={required}
                 style={{ ...inputStyles }}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -152,6 +155,7 @@ const Input = ({
               id={`${id}-input`}
               placeholder={placeholder}
               value={value}
+              required={required}
               aria-invalid={fieldValidationIcon.toString()}
               aria-describedby={`${name}-${inputThemes[theme]['error']}`}
               style={{ ...inputStyles }}
@@ -175,6 +179,11 @@ const Input = ({
                 type='button'
                 tabIndex='-1'
                 className={['px-3 py-2', inputThemes[theme], 'border-l-0 rounded-l-none'].join(' ')}
+                style={
+                  theme === 'stackedBottom'
+                    ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }
+                    : {}
+                }
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
@@ -191,9 +200,11 @@ const Input = ({
             </ConditionalRender>
           </div>
         </div>
-        <ConditionalRender condition={!!errorMessage && fieldValidationIcon}>
-          <InputErrorMessage name={name} theme={theme} errorMessage={errorMessage} />
-        </ConditionalRender>
+        {errors?.map(error => (
+          <ConditionalRender key={error?.name} condition={error?.value}>
+            <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
+          </ConditionalRender>
+        ))}
       </ConditionalRender>
     </>
   )

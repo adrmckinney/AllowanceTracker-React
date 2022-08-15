@@ -1,7 +1,5 @@
 // @flow
 
-import { inputThemes } from '../configs/global-styles'
-
 type Props = {
   name: String,
   theme: String,
@@ -11,7 +9,7 @@ type Props = {
 const InputErrorMessage = ({ name, theme, errorMessage }: Props) => {
   return (
     <>
-      <p className='mt-2 text-sm text-red-600' id={`${name}-${inputThemes[theme]['error']}`}>
+      <p className='mt-2 text-sm text-red-600' id={`${name}-${theme}`}>
         {errorMessage}
       </p>
     </>
