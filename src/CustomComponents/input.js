@@ -107,6 +107,7 @@ const Input = ({
                 style={{ ...inputStyles }}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
+                onBlur={touched}
                 className={[
                   'shadow-sm block w-full px-2 h-full',
                   fontThemes.inputText,

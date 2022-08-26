@@ -15,13 +15,18 @@ const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
-  const [touched, setTouched] = useState({ username: false, password: false })
-  const { checkForFieldErrors, errors, filterErrorsByField } = useRegisterValidation(input, touched)
+  // const [touched, setTouched] = useState({ username: false, password: false })
+  const { checkForFieldErrors, errors, filterErrorsByField, touched, setTouched, handleTouched } =
+    useRegisterValidation(
+      input
+      // touched)
+    )
   const navigate = useNavigate()
   // console.log('input?.username', input?.username)
   // console.log('usernameErrors', usernameErrors)
   // console.log('passwordErrors', passwordErrors)
   console.log('errors', errors)
+  console.log('touched', touched)
   const handleSubmit = e => {
     e.preventDefault()
     checkForFieldErrors()
@@ -35,14 +40,14 @@ const RegistrationPage = () => {
     })
   }
 
-  const handleTouched = ({ name }) => {
-    setTouched(touched => ({
-      ...touched,
-      [name]: true,
-    }))
+  // const handleTouched = ({ name }) => {
+  //   setTouched(touched => ({
+  //     ...touched,
+  //     [name]: true,
+  //   }))
 
-    checkForFieldErrors(name)
-  }
+  //   checkForFieldErrors(name)
+  // }
 
   return (
     <>
