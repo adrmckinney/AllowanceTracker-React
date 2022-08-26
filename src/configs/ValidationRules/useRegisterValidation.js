@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 
 const useRegisterValidation = ({ username, password, confirm_password }) => {
   const [touched, setTouched] = useState({ username: false, password: false })
@@ -11,100 +11,103 @@ const useRegisterValidation = ({ username, password, confirm_password }) => {
       [name]: true,
     }))
 
-    checkForFieldErrors(name)
+    // checkForFieldErrors(name)
   }
 
-  const [errors, setErrors] = useState([
-    {
-      name: 'usernameExists',
-      field: 'username',
-      value: false,
-      message: 'Username is required',
-    },
-    {
-      name: 'passwordExists',
-      field: 'password',
-      value: false,
-      message: 'Password is required',
-    },
-    {
-      name: 'doesNotHaveValidLength',
-      field: 'password',
-      value: false,
-      message: 'Your password must be at least 8 characters',
-    },
-    {
-      name: 'doesNotHaveNumber',
-      field: 'password',
-      value: false,
-      message: 'Your password must include at least one number',
-    },
-    {
-      name: 'doesNotHaveUpperCase',
-      field: 'password',
-      value: false,
-      message: 'Your password must include at least one capital letter',
-    },
-    {
-      name: 'doesNotHaveLowerCase',
-      field: 'password',
-      value: false,
-      message: 'Your password must include at least one lower case letter',
-    },
-    {
-      name: 'specialCharacter',
-      field: 'password',
-      value: false,
-      message:
-        'Your password must include at least one special character (! @ # $ % ^ & * ( ) _ +)',
-    },
-    {
-      name: 'doesNotMatch',
-      field: 'confirm_password',
-      value: false,
-      message: 'Your passwords must match',
-    },
-  ])
-
-  const checkForFieldErrors = name => {
-    const newErrorState = errors?.map(error => {
-      return { ...error, value: registrationValidation(filterErrorsByField(name)) }
-    })
-    setErrors(newErrorState)
+  const reducer = (errors, action) => {
+    console.log('errors', errors)
+    console.log('action', action)
+    switch (action?.type) {
+      case 'doesNotHaveValidLength':
+        return { ...errors, password: [...errors?.password, action?.payload] }
+      // at the point now where I need to find the specific object and change it's value.
+      // the initial state does not appear to be set up very well for this
+      default:
+        return errors
+    }
   }
 
-  const filterErrorsByField = field => {
-    return errors?.filter(error => error?.field === field)
+  const initialState = {
+    password: [
+      {
+        name: 'passwordExists',
+        field: 'password',
+        value: false,
+        message: 'Password is required',
+      },
+      {
+        name: 'doesNotHaveValidLength',
+        field: 'password',
+        value: false,
+        message: 'Your password must be at least 8 characters',
+      },
+      {
+        name: 'doesNotHaveNumber',
+        field: 'password',
+        value: false,
+        message: 'Your password must include at least one number',
+      },
+      {
+        name: 'doesNotHaveUpperCase',
+        field: 'password',
+        value: false,
+        message: 'Your password must include at least one capital letter',
+      },
+      {
+        name: 'doesNotHaveLowerCase',
+        field: 'password',
+        value: false,
+        message: 'Your password must include at least one lower case letter',
+      },
+      {
+        name: 'specialCharacter',
+        field: 'password',
+        value: false,
+        message:
+          'Your password must include at least one special character (! @ # $ % ^ & * ( ) _ +)',
+      },
+    ],
+    confirm_password: [
+      {
+        name: 'doesNotMatch',
+        field: 'confirm_password',
+        value: false,
+        message: 'Your passwords must match',
+      },
+    ],
   }
+
+  const [errors, dispatch] = useReducer(reducer, initialState)
+  console.log('errors', errors)
+  // const checkForFieldErrors = name => {
+  //   const newErrorState = errors?.map(error => {
+  //     return { ...error, value: registrationValidation(filterErrorsByField(name)) }
+  //   })
+  //   // setErrors(newErrorState)
+  // }
+
+  // const filterErrorsByField = field => {
+  //   return errors?.filter(error => error?.field === field)
+  // }
 
   useEffect(() => {
-    if (touched?.username) {
-      const newErrorState = errors?.map(error => {
-        if (error?.field === 'username') {
-          return { ...error, value: registrationValidation(error) }
-        } else {
-          return error
-        }
-      })
-
-      setErrors(newErrorState)
-    }
-
     if (touched?.password) {
-      const newErrorState = errors?.map(error => {
+      errors?.password?.map(error => {
         if (error?.field === 'password') {
           console.log('error is password', error)
-          return { ...error, value: registrationValidation(error) }
-        } else {
-          return error
+          dispatch({ type: error?.name, payload: registrationValidation(error) })
+          // return { ...error, value: registrationValidation(error) }
+          // } else {
+          //   return error
+          // }
         }
       })
 
-      setErrors(newErrorState)
+      // setErrors(newErrorState)
     }
 
     if (touched?.confirm_password) {
-      const newErrorState = errors?.map(error => {
+      const newErrorState = errors?.confirm_password?.map(error => {
         if (error?.field === 'confirm_password') {
           console.log('error is confirm_password', error)
           return { ...error, value: registrationValidation(error) }
@@ -114,12 +117,12 @@ const useRegisterValidation = ({ username, password, confirm_password }) => {
         }
       })
 
-      setErrors(newErrorState)
+      // setErrors(newErrorState)
     }
 
     // const value = ['doesNotHaveValidLength', 'hasNumber', 'upperCase', 'lowerCase', 'specialChar']
-    const count = errors?.filter(error => error?.value === true)?.length
-    console.log('count', count)
+    // const count = errors?.filter(error => error?.value === true)?.length
+    // console.log('count', count)
     // const falseCount = 5 - count
     // console.log('VALUE', value)
     // console.log('count', falseCount)
@@ -179,7 +182,14 @@ const useRegisterValidation = ({ username, password, confirm_password }) => {
     }
   }
 
-  return { checkForFieldErrors, errors, filterErrorsByField, touched, setTouched, handleTouched }
+  return {
+    // checkForFieldErrors,
+    errors,
+    // filterErrorsByField,
+    touched,
+    setTouched,
+    handleTouched,
+  }
 }
 
 export default useRegisterValidation

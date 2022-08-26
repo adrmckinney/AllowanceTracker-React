@@ -16,20 +16,26 @@ const RegistrationPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
   // const [touched, setTouched] = useState({ username: false, password: false })
-  const { checkForFieldErrors, errors, filterErrorsByField, touched, setTouched, handleTouched } =
-    useRegisterValidation(
-      input
-      // touched)
-    )
+  const {
+    // checkForFieldErrors,
+    errors,
+    // filterErrorsByField,
+    touched,
+    setTouched,
+    handleTouched,
+  } = useRegisterValidation(
+    input
+    // touched)
+  )
   const navigate = useNavigate()
   // console.log('input?.username', input?.username)
   // console.log('usernameErrors', usernameErrors)
   // console.log('passwordErrors', passwordErrors)
-  console.log('errors', errors)
-  console.log('touched', touched)
+  // console.log('errors', errors)
+  // console.log('touched', touched)
   const handleSubmit = e => {
     e.preventDefault()
-    checkForFieldErrors()
+    // checkForFieldErrors()
     register(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
         setTouched(false)
@@ -86,7 +92,7 @@ const RegistrationPage = () => {
               value={input?.username}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              errors={filterErrorsByField('username')}
+              // errors={filterErrorsByField('username')}
               // fieldValidationIcon={usernameErrors?.[0]?.value}
             />
 
@@ -115,7 +121,7 @@ const RegistrationPage = () => {
               value={input?.password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              errors={filterErrorsByField('password')}
+              // errors={filterErrorsByField('password')}
               //   fieldValidationIcon={passwordError.value}
             />
 
@@ -131,7 +137,7 @@ const RegistrationPage = () => {
               value={input?.confirm_password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              errors={filterErrorsByField('confirm_password')}
+              // errors={filterErrorsByField('confirm_password')}
               // fieldValidationIcon={confirmPasswordError.value}
             />
 
