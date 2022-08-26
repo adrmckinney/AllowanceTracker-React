@@ -19,9 +19,29 @@ const useRegisterValidation = ({ username, password, confirm_password }) => {
     console.log('action', action)
     switch (action?.type) {
       case 'doesNotHaveValidLength':
-        return { ...errors, password: [...errors?.password, action?.payload] }
+        return {
+          ...errors,
+          password: [
+            ...errors?.password,
+            errors?.password: {
+              ...errors.password?.[action?.index],  
+              errors?.password?.[action?.index]?.value: action?.value 
+            }
+          ],
+        }
       // at the point now where I need to find the specific object and change it's value.
       // the initial state does not appear to be set up very well for this
+      // thought about making the initial state look like:
+      // password: {
+        // passwordExists: {
+          // field: password',
+          // value: false,
+          // message: 'password is required'
+      // },
+      // {doesNotHaveValidLength ...etc
+        // }
+      // }
+      // problem with that is that it can't be mapped on the render
       default:
         return errors
     }
@@ -92,10 +112,10 @@ const useRegisterValidation = ({ username, password, confirm_password }) => {
 
   useEffect(() => {
     if (touched?.password) {
-      errors?.password?.map(error => {
+      errors?.password?.map((error, idx) => {
         if (error?.field === 'password') {
           console.log('error is password', error)
-          dispatch({ type: error?.name, payload: registrationValidation(error) })
+          dispatch({ type: error?.name, value: registrationValidation(error), index: idx })
           // return { ...error, value: registrationValidation(error) }
           // } else {
           //   return error
