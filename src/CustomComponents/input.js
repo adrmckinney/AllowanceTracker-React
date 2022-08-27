@@ -194,7 +194,11 @@ const Input = ({
                 )}
               </button>
             </ConditionalRender>
-            <ConditionalRender condition={fieldValidationIcon}>
+            <ConditionalRender
+              condition={
+                (name !== 'password' || name === 'confirm_password') && fieldValidationIcon
+              }
+            >
               <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
                 <ExclamationCircleIcon className='h-5 w-5 text-red-500' aria-hidden='true' />
               </div>

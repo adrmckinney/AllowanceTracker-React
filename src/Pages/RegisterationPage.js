@@ -5,37 +5,18 @@ import { Link, useNavigate } from 'react-router-dom'
 import Input from '../CustomComponents/input'
 import { useFormContext, withFormContext } from '../HOC/withFormContext'
 import { useRegister as register } from '../api/useRegister'
-
 import useRegisterValidation from '../configs/ValidationRules/useRegisterValidation'
-import ConditionalRender from '../CustomComponents/conditional-render'
-import InputErrorMessage from '../CustomComponents/input-error-message'
-import useLoginValidation from '../configs/ValidationRules/useLoginValidation'
 
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
-  // const [touched, setTouched] = useState({ username: false, password: false })
-  const {
-    // checkForFieldErrors,
-    errors,
-    // filterErrorsByField,
-    touched,
-    setTouched,
-    handleTouched,
-  } = useRegisterValidation(
-    input
-    // touched)
-  )
+  const { passwordValidations, confirmPasswordValidations, isDisabled, setTouched, handleTouched } =
+    useRegisterValidation(input)
   const navigate = useNavigate()
-  // console.log('input?.username', input?.username)
-  // console.log('usernameErrors', usernameErrors)
-  // console.log('passwordErrors', passwordErrors)
-  // console.log('errors', errors)
-  // console.log('touched', touched)
+
   const handleSubmit = e => {
     e.preventDefault()
-    // checkForFieldErrors()
     register(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
         setTouched(false)
@@ -45,15 +26,6 @@ const RegistrationPage = () => {
       }
     })
   }
-
-  // const handleTouched = ({ name }) => {
-  //   setTouched(touched => ({
-  //     ...touched,
-  //     [name]: true,
-  //   }))
-
-  //   checkForFieldErrors(name)
-  // }
 
   return (
     <>
@@ -79,7 +51,6 @@ const RegistrationPage = () => {
               value={input?.name}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              // fieldValidationIcon={nameError.value}
             />
 
             <Input
@@ -92,8 +63,6 @@ const RegistrationPage = () => {
               value={input?.username}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              // errors={filterErrorsByField('username')}
-              // fieldValidationIcon={usernameErrors?.[0]?.value}
             />
 
             <Input
@@ -106,7 +75,6 @@ const RegistrationPage = () => {
               value={input?.email}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              // fieldValidationIcon={emailError.value}
             />
 
             <Input
@@ -121,8 +89,7 @@ const RegistrationPage = () => {
               value={input?.password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              // errors={filterErrorsByField('password')}
-              //   fieldValidationIcon={passwordError.value}
+              errors={passwordValidations}
             />
 
             <Input
@@ -137,8 +104,7 @@ const RegistrationPage = () => {
               value={input?.confirm_password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
-              // errors={filterErrorsByField('confirm_password')}
-              // fieldValidationIcon={confirmPasswordError.value}
+              errors={confirmPasswordValidations}
             />
 
             <div>
@@ -149,7 +115,8 @@ const RegistrationPage = () => {
                 iconStatus='primary'
                 relativeGroup={true}
                 customClassName='w-full mt-6'
-                // disabled={usernameError.value || passwordError.value}
+                disabled={isDisabled}
+                onClick={() => console.log('btn clicked')}
               ></Button>
             </div>
           </form>
