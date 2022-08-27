@@ -1,15 +1,6 @@
-import { useEffect, useState, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 
-const useRegisterValidation = ({ password, confirm_password }) => {
-  const [touched, setTouched] = useState({ username: false, password: false })
-
-  const handleTouched = ({ name }) => {
-    setTouched(touched => ({
-      ...touched,
-      [name]: true,
-    }))
-  }
-
+const useRegisterValidation = ({ password, confirm_password }, touched) => {
   const reducer = (validations, action) => {
     const setValue = field => ({
       ...validations,
@@ -131,8 +122,6 @@ const useRegisterValidation = ({ password, confirm_password }) => {
     passwordValidations,
     confirmPasswordValidations,
     isDisabled,
-    setTouched,
-    handleTouched,
   }
 }
 

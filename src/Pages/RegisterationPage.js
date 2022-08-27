@@ -10,9 +10,11 @@ import useRegisterValidation from '../configs/ValidationRules/useRegisterValidat
 const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const { handleChange, inputState: input } = useFormContext()
-  const { passwordValidations, confirmPasswordValidations, isDisabled, setTouched, handleTouched } =
-    useRegisterValidation(input)
+  const { handleChange, inputState: input, touched, setTouched, handleTouched } = useFormContext()
+  const { passwordValidations, confirmPasswordValidations, isDisabled } = useRegisterValidation(
+    input,
+    touched
+  )
   const navigate = useNavigate()
 
   const handleSubmit = e => {
