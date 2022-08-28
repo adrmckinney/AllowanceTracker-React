@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import { getUser } from './api/getUser'
 import ConditionalRender from './CustomComponents/conditional-render'
+import { withUserContext } from './HOC/withUserContext'
 import NavBar from './Navigation/NavBar'
 import ChoresPage from './Pages/ChoresPage'
 import HTTPStatusCodePage from './Pages/HTTPStatusCodePage'
@@ -12,20 +13,8 @@ import UserDetailsPage from './Pages/UserDetailsPage'
 import UsersPage from './Pages/UsersPage'
 
 function App() {
-  const [user, setUser] = useState(null)
   const [HTTPCodeMessage, setHTTPCodeMessage] = useState(null)
   const navigate = useNavigate()
-  useEffect(() => {
-    getUser().then(data => {
-      console.log('data', data)
-      if (data?.hasOwnProperty('errorMessage')) {
-        setHTTPCodeMessage(data?.errorMessage)
-        navigate('/error-page')
-      } else {
-        setUser(data)
-      }
-    })
-  }, [])
 
   console.log('HTTPCodeMessage', HTTPCodeMessage)
 
@@ -50,4 +39,4 @@ function App() {
   )
 }
 
-export default App
+export default withUserContext(App)

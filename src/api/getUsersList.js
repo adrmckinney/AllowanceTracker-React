@@ -1,10 +1,12 @@
 import { apiUrl } from './routes'
 
-export function getUser(token) {
+export function getUsersList(token) {
+  console.log('token', token)
   return apiUrl
-    .get(`/me/1`, {
+    .get(`/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        // Accept: 'application/json',
       },
     })
     .then(res => res.data)

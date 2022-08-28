@@ -8,10 +8,12 @@ import { useLogin as login } from '../api/useLogin'
 import useLoginValidation from '../configs/ValidationRules/useLoginValidation'
 import ConditionalRender from '../CustomComponents/conditional-render'
 import InputErrorMessage from '../CustomComponents/input-error-message'
+import { useUserContext } from '../HOC/withUserContext'
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
+  const { setAuthUser } = useUserContext()
   const [touched, setTouched] = useState(false)
   const { usernameError, passwordError, handleApiErrors, apiErrors } = useLoginValidation(input)
   const navigate = useNavigate()
@@ -23,6 +25,7 @@ const LoginPage = () => {
         setTouched(false)
         handleApiErrors(data?.errorMessage)
       } else {
+        setAuthUser(data)
         navigate(`../user/${data.id}`)
       }
     })
