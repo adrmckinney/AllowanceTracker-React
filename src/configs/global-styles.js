@@ -7,6 +7,12 @@ export const colorThemes = {
     iconText: 'text-sky-500',
     hoverIconText: 'hover:text-sky-400',
     focusBorder: 'focus:border-sky-500',
+    navLinkText: 'text-gray-500',
+    hoverNavLinkText: 'hover:text-gray-700',
+    navMobileLinkText: 'text-sky-700',
+    hoverNavMobileLinkText: 'hover:text-sky-600',
+    border: 'border-sky-500',
+    navBgLinkColor: 'bg-sky-50',
   },
   secondary: {
     bgColor: 'bg-sky-100',
@@ -21,12 +27,16 @@ export const colorThemes = {
     hoverBgColor: 'bg-red-200',
     text: 'text-red-700',
     focusRing: 'focus:ring-red-500',
-    iconText: 'text-red-300',
+    iconText: 'text-red-500',
     hoverIconText: 'hover:text-red-400',
   },
   link: {
     text: 'text-sky-600',
     hoverText: 'hover:text-sky-500',
+  },
+  navLink: {
+    text: 'text-gray-500',
+    hoverText: 'hover:text-gray-700',
   },
 }
 
@@ -69,6 +79,19 @@ export const buttonTheme = {
     'rounded-none',
     colorThemes.link.text,
     colorThemes.link.hoverText,
+  ].join(' '),
+  navLink: [
+    'bg-transparent',
+    'border-transparent',
+    'border-0',
+    'border-b-2',
+    'hover:border-gray-300',
+    'shadow-none',
+    'focus:ring-0',
+    'outline-0',
+    'rounded-none',
+    colorThemes.navLink.text,
+    colorThemes.navLink.hoverText,
   ].join(' '),
 }
 

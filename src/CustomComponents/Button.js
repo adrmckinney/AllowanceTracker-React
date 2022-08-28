@@ -1,6 +1,6 @@
 import { buttonTheme } from '../configs/global-styles'
-import { icons } from '../configs/icons'
 import ConditionalRender from './conditional-render'
+import Icon from './Icon'
 
 const Button = ({
   as: CustomTag = 'button',
@@ -61,10 +61,24 @@ const Button = ({
     >
       <ConditionalRender
         condition={relativeGroup}
-        falseRender={icons({ customIconStyle, overrideIconStyle, size, status })[0][icon]}
+        falseRender={
+          <Icon
+            icon={icon}
+            size={size}
+            iconStatus={status}
+            customIconStyle={customIconStyle}
+            overrideIconStyle={overrideIconStyle}
+          />
+        }
       >
         <span className='absolute left-0 inset-y-0 flex items-center pl-3'>
-          {icons({ customIconStyle, overrideIconStyle, size, iconStatus })[0][icon]}
+          <Icon
+            icon={icon}
+            size={size}
+            iconStatus={status}
+            customIconStyle={customIconStyle}
+            overrideIconStyle={overrideIconStyle}
+          />
         </span>
       </ConditionalRender>
       {title}

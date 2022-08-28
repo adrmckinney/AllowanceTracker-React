@@ -11,10 +11,13 @@ const RegistrationPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input, touched, setTouched, handleTouched } = useFormContext()
-  const { passwordValidations, confirmPasswordValidations, isDisabled } = useRegisterValidation(
-    input,
-    touched
-  )
+  const {
+    passwordValidations,
+    confirmPasswordValidations,
+    isDisabled,
+    apiErrors,
+    handleApiErrors,
+  } = useRegisterValidation(input, touched)
   const navigate = useNavigate()
 
   const handleSubmit = e => {
@@ -22,7 +25,7 @@ const RegistrationPage = () => {
     register(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
         setTouched(false)
-        // handleApiErrors(data?.errorMessage)
+        handleApiErrors(data?.errorMessage)
       } else {
         navigate(`../user/${data.id}`)
       }
@@ -65,6 +68,8 @@ const RegistrationPage = () => {
               value={input?.username}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
+              errors={apiErrors?.username}
+              fieldValidationIcon={apiErrors?.username?.[0]?.value}
             />
 
             <Input
@@ -118,7 +123,6 @@ const RegistrationPage = () => {
                 relativeGroup={true}
                 customClassName='w-full mt-6'
                 disabled={isDisabled}
-                onClick={() => console.log('btn clicked')}
               ></Button>
             </div>
           </form>

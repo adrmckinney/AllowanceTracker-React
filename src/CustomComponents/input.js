@@ -1,13 +1,11 @@
 // @flow
 
 import React from 'react'
-import { ExclamationCircleIcon } from '@heroicons/react/solid'
 import ConditionalRender from './conditional-render'
-import { MailIcon } from '@heroicons/react/solid'
 import HorizontalLayout from '../CustomComponents/horizontal-layout'
 import { fontThemes, inputThemes } from '../configs/global-styles'
 import InputErrorMessage from './input-error-message'
-import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
+import Icon from './Icon'
 
 type Props = {
   fieldValidationIcon?: Boolean,
@@ -33,6 +31,10 @@ type Props = {
   errors?: Object,
   touched?: Boolean,
   showPassword?: Boolean,
+  iconSize: String,
+  iconStatus: String,
+  customIconStyle: String,
+  overrideIconStyle: String,
   setShowPassword?: () => {},
   onChange: () => {},
   onKeyDown?: () => {},
@@ -62,14 +64,14 @@ const Input = ({
   errors,
   touched,
   showPassword,
+  iconSize,
+  iconStatus,
+  customIconStyle,
+  overrideIconStyle,
   setShowPassword,
   onChange,
   onKeyDown,
 }: Props) => {
-  const ICONS = {
-    mail: <MailIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />,
-  }
-
   return (
     <>
       <ConditionalRender
@@ -145,7 +147,13 @@ const Input = ({
           >
             <ConditionalRender condition={icon}>
               <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                {ICONS[icon]}
+                <Icon
+                  icon={icon}
+                  size={iconSize}
+                  iconStatus={iconStatus}
+                  customIconStyle={customIconStyle}
+                  overrideIconStyle={overrideIconStyle}
+                />
               </div>
             </ConditionalRender>
             <input
@@ -188,9 +196,9 @@ const Input = ({
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOffIcon className='w-4 h-4' />
+                  <Icon icon='eyeSlash' size={'sm'} />
                 ) : (
-                  <EyeIcon className='w-4 h-4' />
+                  <Icon icon='eye' size={'sm'} />
                 )}
               </button>
             </ConditionalRender>
@@ -200,13 +208,13 @@ const Input = ({
               }
             >
               <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
-                <ExclamationCircleIcon className='h-5 w-5 text-red-500' aria-hidden='true' />
+                <Icon icon='exclamation' iconStatus='danger' />
               </div>
             </ConditionalRender>
           </div>
         </div>
         {errors?.map(error => (
-          <ConditionalRender key={error?.name} condition={error?.value}>
+          <ConditionalRender key={error?.message} condition={error?.value}>
             <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
           </ConditionalRender>
         ))}

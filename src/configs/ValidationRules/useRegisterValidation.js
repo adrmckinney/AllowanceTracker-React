@@ -1,6 +1,7 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
 const useRegisterValidation = ({ password, confirm_password }, touched) => {
+  const [apiErrors, setApiErrors] = useState([])
   const reducer = (validations, action) => {
     const setValue = field => ({
       ...validations,
@@ -83,6 +84,10 @@ const useRegisterValidation = ({ password, confirm_password }, touched) => {
         dispatch({ type: validationKey, payload: validationConfigs(validationKey) })
       })
     }
+
+    if (touched?.username) {
+      setApiErrors({})
+    }
   }, [password, confirm_password, touched])
 
   const validationConfigs = name => {
@@ -112,16 +117,30 @@ const useRegisterValidation = ({ password, confirm_password }, touched) => {
   const confirmPasswordErrorsCount = Object.values(validations?.confirm_password)?.filter(
     val => val?.value === true
   )?.length
+  const apiErrorsCount = apiErrors?.username?.filter(val => val?.value === true)?.length
 
-  const isDisabled = passwordErrorsCount + confirmPasswordErrorsCount > 0
+  const isDisabled = passwordErrorsCount + confirmPasswordErrorsCount + apiErrorsCount > 0
 
   const passwordValidations = Object.values(validations?.password)
   const confirmPasswordValidations = Object.values(validations?.confirm_password)
+
+  const handleApiErrors = errorMessage => {
+    switch (errorMessage) {
+      case 'Username already exists':
+        setApiErrors({ username: [{ message: 'Username already exists', value: true }] })
+        break
+      default:
+        setApiErrors([{ message: errorMessage, value: true }])
+        break
+    }
+  }
 
   return {
     passwordValidations,
     confirmPasswordValidations,
     isDisabled,
+    apiErrors,
+    handleApiErrors,
   }
 }
 

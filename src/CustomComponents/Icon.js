@@ -1,21 +1,28 @@
+// @flow
+
+import React from 'react'
 import {
   CheckIcon,
-  MenuAlt2Icon,
-  PlusSmIcon,
-  MailIcon,
+  Bars3Icon,
+  PlusIcon,
+  EnvelopeIcon,
   LockClosedIcon,
-} from '@heroicons/react/solid'
-import { MailIcon as MailOutline } from '@heroicons/react/outline'
+  ExclamationCircleIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/solid'
 import {
-  RefreshIcon,
-  PencilAltIcon,
+  ArrowPathIcon,
+  PencilSquareIcon,
   TrashIcon,
-  XIcon,
-  ReplyIcon,
-  CodeIcon,
-  TerminalIcon,
-} from '@heroicons/react/outline'
-import { colorThemes } from './global-styles'
+  XMarkIcon,
+  ArrowUturnLeftIcon,
+  CodeBracketIcon,
+  CommandLineIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  BellIcon,
+} from '@heroicons/react/24/outline'
+import { colorThemes } from '../configs/global-styles'
 
 const sizes = {
   xs: 'h-3 w-3',
@@ -23,38 +30,41 @@ const sizes = {
   md: 'h-5 w-5',
   lg: 'h-5 w-5',
   xl: 'h-6 w-6',
+  '2xl': 'h-8 w-8',
 }
 
-export const icons = ({
+type Props = {
+  icon: String,
+  customIconStyle: String,
+  overrideIconStyle: Object,
+  size: String,
+  iconStatus: String,
+}
+
+const Icon = ({
+  icon = '',
   customIconStyle = '',
   overrideIconStyle = null,
-  size = 'medium',
+  size = 'md',
   iconStatus = '',
-}) => [
-  {
-    mailOutline: (
-      <MailOutline
-        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
-        style={overrideIconStyle}
-        aria-hidden='true'
-      />
-    ),
+}: Props) => {
+  const icons = {
     mailSolid: (
-      <MailIcon
+      <EnvelopeIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
     refresh: (
-      <RefreshIcon
+      <ArrowPathIcon
         className={`${sizes[size]} mr-2 self-center animate-spin transform rotate-180 ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
     edit: (
-      <PencilAltIcon
+      <PencilSquareIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
@@ -68,7 +78,7 @@ export const icons = ({
       />
     ),
     xicon: (
-      <XIcon
+      <XMarkIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
@@ -82,36 +92,76 @@ export const icons = ({
       />
     ),
     reply: (
-      <ReplyIcon
+      <ArrowUturnLeftIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
     code: (
-      <CodeIcon
+      <CodeBracketIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
     terminal: (
-      <TerminalIcon
+      <CommandLineIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
-    menu: (
-      <MenuAlt2Icon
+    bars: (
+      <Bars3Icon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'
       />
     ),
     plusSm: (
-      <PlusSmIcon
+      <PlusIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    eye: (
+      <EyeIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    eyeSlash: (
+      <EyeSlashIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    bell: (
+      <BellIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    magnifyingGlass: (
+      <MagnifyingGlassIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    exclamation: (
+      <ExclamationCircleIcon
+        className={[
+          `${sizes[size]}`,
+          'mr-2 self-center',
+          `${iconStatus?.length > 0 ? colorThemes[iconStatus].iconText : ''}`,
+          `${customIconStyle}`,
+        ].join(' ')}
         style={overrideIconStyle}
         aria-hidden='true'
       />
@@ -129,5 +179,9 @@ export const icons = ({
         aria-hidden='true'
       />
     ),
-  },
-]
+  }
+
+  return icons[icon]
+}
+
+export default Icon
