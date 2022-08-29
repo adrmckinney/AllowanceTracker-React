@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Disclosure, Menu } from '@headlessui/react'
 import { colorThemes } from '../configs/global-styles'
 import Search from '../CustomComponents/Search'
@@ -7,13 +7,32 @@ import NotificationIconButton from '../CustomComponents/NotificationIconButton'
 import NavHamburgerMenuButton from './NavHamburgerMenuButton'
 import DefaultTransition from '../CustomComponents/DefaultTransition'
 import ProfileImage from './profile-image'
+import { logoutUser } from '../api/logoutUser'
+import { useUserContext } from '../HOC/withUserContext'
+import { useErrorContext } from '../HOC/withErrorContext'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const NavBar = () => {
+  const navigate = useNavigate()
+  const { authUser, setAuthUser } = useUserContext()
+  const { setHttpError } = useErrorContext()
   const isLoggedIn = true
+
+  const handleLogout = () => {
+    logoutUser(authUser?.api_token).then(data => {
+      console.log('data', data)
+      if (data?.hasOwnProperty('errorMessage')) {
+        setHttpError(data?.errorMessage)
+        navigate('/error-page')
+      } else if (data?.isLoggedOut) {
+        setAuthUser(null)
+        navigate('/login')
+      }
+    })
+  }
 
   const navLinks = [
     {
@@ -23,7 +42,7 @@ const NavBar = () => {
     },
     {
       title: 'Users',
-      path: '/Users',
+      path: '/users',
       condition: isLoggedIn,
     },
     {
@@ -56,7 +75,7 @@ const NavBar = () => {
     },
     {
       title: 'Sign out',
-      path: '/settings',
+      onClick: handleLogout,
       condition: isLoggedIn,
     },
   ]
@@ -109,11 +128,12 @@ const NavBar = () => {
                         <Menu.Item key={link?.title}>
                           {({ active }) => (
                             <Link
-                              to={link?.path}
+                              to={!link?.onClick ? link?.path : ''}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
                               )}
+                              onClick={!!link?.onClick ? link?.onClick : () => {}}
                             >
                               {link?.title}
                             </Link>

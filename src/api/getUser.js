@@ -1,8 +1,8 @@
 import { apiUrl } from './routes'
 
-export function getUser(token) {
+export function getUser(token, id) {
   return apiUrl
-    .get(`/me/1`, {
+    .get(`/me/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -1,7 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useErrorContext } from '../HOC/withErrorContext'
 
-const HTTPStatusCodePage = ({ HTTPCodeMessage }) => {
-  const navigate = useNavigate()
+const HTTPStatusCodePage = () => {
+  const { httpError, setHttpError } = useErrorContext()
+  const code = httpError === 'Unauthenticated.' ? 401 : 404
+  console.log('httpError', httpError)
   return (
     <main
       className='min-h-full bg-cover bg-top sm:bg-top'
@@ -11,7 +14,9 @@ const HTTPStatusCodePage = ({ HTTPCodeMessage }) => {
       }}
     >
       <div className='max-w-7xl mx-auto px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8 lg:py-48'>
-        <p className='text-base font-semibold text-black text-opacity-50'>404 {HTTPCodeMessage}</p>
+        <p className='text-base font-semibold text-black text-opacity-50'>
+          {code} {httpError}
+        </p>
         <h1 className='mt-2 text-4xl font-bold text-white tracking-tight sm:text-5xl'>
           Uh oh! I think you’re lost.
         </h1>
@@ -22,6 +27,7 @@ const HTTPStatusCodePage = ({ HTTPCodeMessage }) => {
           <Link
             to={'/login'}
             className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black text-opacity-75 bg-white bg-opacity-75 sm:bg-opacity-25 sm:hover:bg-opacity-50'
+            onClick={() => setHttpError(null)}
           >
             Go back home
           </Link>

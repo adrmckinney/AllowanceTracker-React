@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
-import { getUser } from './api/getUser'
+import { Routes, Route } from 'react-router-dom'
 import ConditionalRender from './CustomComponents/conditional-render'
+import { useErrorContext, withErrorContext } from './HOC/withErrorContext'
 import { withUserContext } from './HOC/withUserContext'
 import NavBar from './Navigation/NavBar'
 import ChoresPage from './Pages/ChoresPage'
@@ -13,15 +12,12 @@ import UserDetailsPage from './Pages/UserDetailsPage'
 import UsersPage from './Pages/UsersPage'
 
 function App() {
-  const [HTTPCodeMessage, setHTTPCodeMessage] = useState(null)
-  const navigate = useNavigate()
-
-  console.log('HTTPCodeMessage', HTTPCodeMessage)
+  const { httpError } = useErrorContext()
 
   return (
     <div className='App'>
       <header className='App-header'>
-        <ConditionalRender condition={!HTTPCodeMessage}>
+        <ConditionalRender condition={!httpError}>
           <NavBar />
         </ConditionalRender>
       </header>
@@ -33,10 +29,10 @@ function App() {
         <Route path='/registration' element={<RegisterationPage />} />
         <Route path='/users' element={<UsersPage />} />
         <Route path='/user/:id' element={<UserDetailsPage />} />
-        <Route path='/error-page' element={<HTTPStatusCodePage message={HTTPCodeMessage} />} />
+        <Route path='/error-page' element={<HTTPStatusCodePage />} />
       </Routes>
     </div>
   )
 }
 
-export default withUserContext(App)
+export default withErrorContext(withUserContext(App))

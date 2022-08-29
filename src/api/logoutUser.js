@@ -1,9 +1,9 @@
 import { apiUrl } from './routes'
 
-export function getUsersList(token) {
+export function logoutUser(token) {
   console.log('token', token)
   return apiUrl
-    .get('/users', {
+    .post('/logout', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
