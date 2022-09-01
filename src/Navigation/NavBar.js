@@ -23,12 +23,11 @@ const NavBar = () => {
 
   const handleLogout = () => {
     logoutUser(authUser?.api_token).then(data => {
-      console.log('data', data)
       if (data?.hasOwnProperty('errorMessage')) {
         setHttpError(data?.errorMessage)
         navigate('/error-page')
       } else if (data?.isLoggedOut) {
-        setAuthUser(null)
+        localStorage.removeItem('authUser')
         navigate('/login')
       }
     })

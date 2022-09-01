@@ -27,6 +27,7 @@ const RegistrationPage = () => {
         setTouched(false)
         handleApiErrors(data?.errorMessage)
       } else {
+        localStorage.setItem('authUser', JSON.stringify(data))
         navigate(`../user/${data.id}`)
       }
     })
