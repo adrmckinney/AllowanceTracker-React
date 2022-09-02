@@ -122,7 +122,7 @@ const NavBar = () => {
                     </Menu.Button>
                   </div>
                   <DefaultTransition>
-                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50'>
                       {profileLinks?.map(link => (
                         <Menu.Item key={link?.title}>
                           {({ active }) => (

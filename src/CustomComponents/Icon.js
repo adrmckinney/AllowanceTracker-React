@@ -21,6 +21,8 @@ import {
   EyeIcon,
   EyeSlashIcon,
   BellIcon,
+  CurrencyDollarIcon,
+  ListBulletIcon,
 } from '@heroicons/react/24/outline'
 import { colorThemes } from '../configs/global-styles'
 
@@ -149,6 +151,20 @@ const Icon = ({
     ),
     magnifyingGlass: (
       <MagnifyingGlassIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    money: (
+      <CurrencyDollarIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overrideIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    list: (
+      <ListBulletIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overrideIconStyle}
         aria-hidden='true'

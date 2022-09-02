@@ -15,40 +15,22 @@ const UserDetailsPage = () => {
 
   const features = [
     {
-      name: 'Push to Deploy',
+      name: 'Transactions',
       description:
         'Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi vitae lobortis.',
-      icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
+      icon: <Icon icon='money' customIconStyle={'text-white mr-0'} size='xl' />,
     },
     {
-      name: 'SSL Certificates',
+      name: 'Chores',
       description:
         'Qui aut temporibus nesciunt vitae dicta repellat sit dolores pariatur. Temporibus qui illum aut.',
-      icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
+      icon: <Icon icon='list' customIconStyle={'text-white mr-0'} />,
     },
     {
       name: 'Simple Queues',
       description:
         'Rerum quas incidunt deleniti quaerat suscipit mollitia. Amet repellendus ut odit dolores qui.',
       icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
-    },
-    {
-      name: 'Advanced Security',
-      description:
-        'Ullam laboriosam est voluptatem maxime ut mollitia commodi. Et dignissimos suscipit perspiciatis.',
-      icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
-    },
-    {
-      name: 'Powerful API',
-      description:
-        'Ab a facere voluptatem in quia corrupti veritatis aliquam. Veritatis labore quaerat ipsum quaerat id.',
-      icon: <Icon icon='reply' customIconStyle={'text-white mr-0'} />,
-    },
-    {
-      name: 'Database Backups',
-      description:
-        'Quia qui et est officia cupiditate qui consectetur. Ratione similique et impedit ea ipsum et.',
-      icon: <Icon icon='code' customIconStyle={'text-white mr-0'} />,
     },
   ]
 
