@@ -6,17 +6,19 @@ import { useUserContext } from '../HOC/withUserContext'
 const UsersPage = () => {
   const { authUser } = useUserContext()
   const [users, setUsers] = useState(null)
+  console.log('users', users)
   useEffect(() => {
-    getUsersList(authUser?.api_token).then(data => {
-      console.log('data', data)
-      if (data?.hasOwnProperty('errorMessage')) {
-        // setHTTPCodeMessage(data?.errorMessage)
-        // navigate('/error-page')
-      } else {
-        setUsers(data)
-      }
-    })
-  }, [])
+    if (!!authUser?.api_token) {
+      getUsersList(authUser?.api_token).then(data => {
+        if (data?.hasOwnProperty('errorMessage')) {
+          // setHTTPCodeMessage(data?.errorMessage)
+          // navigate('/error-page')
+        } else {
+          setUsers(data)
+        }
+      })
+    }
+  }, [authUser])
 
   console.log('authUser', authUser)
   console.log('users', users)

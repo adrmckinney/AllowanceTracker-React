@@ -17,7 +17,6 @@ export const withErrorContext =
   Component =>
   ({ ...rest }) => {
     const [httpError, setHttpError] = useState(null)
-    console.log('httpError', httpError)
 
     return (
       <ErrorStateContext.Provider value={httpError}>

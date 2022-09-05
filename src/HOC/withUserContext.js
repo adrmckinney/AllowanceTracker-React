@@ -17,9 +17,8 @@ export const withUserContext =
   Component =>
   ({ ...rest }) => {
     const storedAuthUser = localStorage.getItem('authUser')
-
     const [authUser, setAuthUser] = useState(null)
-    console.log('authUser', authUser)
+
     useEffect(() => {
       if (storedAuthUser !== null) {
         setAuthUser(JSON.parse(storedAuthUser))
@@ -27,6 +26,7 @@ export const withUserContext =
         setAuthUser(null)
       }
     }, [storedAuthUser])
+
     return (
       <UserStateContext.Provider value={authUser}>
         <SetUserStateContext.Provider value={setAuthUser}>

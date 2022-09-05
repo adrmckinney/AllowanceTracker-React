@@ -26,7 +26,6 @@ const LoginPage = () => {
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
-        // setAuthUser(data)
         navigate(`../user/${data.id}`)
       }
     })
