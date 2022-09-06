@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import Button from '../CustomComponents/Button'
-import { fontThemes } from '../configs/global-styles'
+import Button from '../../CustomComponents/Button'
+import { fontThemes } from '../../configs/global-styles'
 import { Link, useNavigate } from 'react-router-dom'
-import Input from '../CustomComponents/input'
-import { useFormContext, withFormContext } from '../HOC/withFormContext'
-import { useLogin as login } from '../api/useLogin'
-import useLoginValidation from '../configs/ValidationRules/useLoginValidation'
-import ConditionalRender from '../CustomComponents/conditional-render'
-import InputErrorMessage from '../CustomComponents/input-error-message'
-import { useUserContext } from '../HOC/withUserContext'
+import Input from '../../CustomComponents/input'
+import { useFormContext, withFormContext } from '../../HOC/withFormContext'
+import { useLogin as login } from '../../api/useLogin'
+import useLoginValidation from '../../configs/ValidationRules/useLoginValidation'
+import ConditionalRender from '../../CustomComponents/conditional-render'
+import InputErrorMessage from '../../CustomComponents/input-error-message'
+import { useUserContext } from '../../HOC/withUserContext'
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)

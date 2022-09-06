@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom'
 import ConditionalRender from './CustomComponents/conditional-render'
 import { useErrorContext, withErrorContext } from './HOC/withErrorContext'
-import { withUserContext } from './HOC/withUserContext'
+import { useUserContext, withUserContext } from './HOC/withUserContext'
 import NavBar from './Navigation/NavBar'
 import ChoresPage from './Pages/ChoresPage'
 import HTTPStatusCodePage from './Pages/HTTPStatusCodePage'
-import LoginPage from './Pages/LoginPage'
+import LoginPage from './Pages/Login/LoginPage'
 import RegisterationPage from './Pages/RegisterationPage'
 import TransactionsPage from './Pages/TransactionsPage'
 import UserDetailsPage from './Pages/UserDetailsPage'
@@ -13,6 +13,7 @@ import UsersPage from './Pages/UsersPage'
 
 function App() {
   const { httpError } = useErrorContext()
+  const { authUser } = useUserContext()
 
   return (
     <div className='App'>
@@ -28,7 +29,7 @@ function App() {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/registration' element={<RegisterationPage />} />
         <Route path='/users' element={<UsersPage />} />
-        <Route path='/user/:id' element={<UserDetailsPage />} />
+        <Route path='/user/:id' element={<UserDetailsPage title={'User Page'} />} />
         <Route path='/error-page' element={<HTTPStatusCodePage />} />
       </Routes>
     </div>

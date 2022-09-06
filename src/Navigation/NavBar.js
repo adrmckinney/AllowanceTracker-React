@@ -28,6 +28,7 @@ const NavBar = () => {
         navigate('/error-page')
       } else if (data?.isLoggedOut) {
         localStorage.removeItem('authUser')
+        setAuthUser(null)
         navigate('/login')
       }
     })
@@ -57,6 +58,11 @@ const NavBar = () => {
   ]
 
   const profileLinks = [
+    {
+      title: 'My Page',
+      path: `/user/${authUser?.id}`,
+      condition: isLoggedIn, // if kid … assign chore if parent
+    },
     {
       title: 'Sign up for chore',
       path: '/settings',
@@ -129,7 +135,7 @@ const NavBar = () => {
                       </Menu.Button>
                     </div>
                     <DefaultTransition>
-                      <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50'>
+                      <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 h-36 overflow-scroll'>
                         {profileLinks?.map(link => (
                           <Menu.Item key={link?.title}>
                             {({ active }) => (

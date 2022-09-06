@@ -1,6 +1,6 @@
 // @flow
 
-import ConfigTools from 'src/configs/ConfigTools'
+import ConfigTools from '../ConfigTools'
 
 export default ConfigTools({
   no_access: {
@@ -19,7 +19,7 @@ export default ConfigTools({
     displayName: 'Parent',
   },
   child: {
-    value: 2,
+    value: 4,
     name: 'child',
     displayName: 'Child',
   },

@@ -1,11 +1,12 @@
 // @flow
 
 type Props = {
-  feature: Object,
+  icon: Node,
   children: Node,
+  title: String,
 }
 
-const FeatureCard = ({ feature, children }: Props) => {
+const FeatureCard = ({ icon, children, title }: Props) => {
   return (
     <>
       <div className='pt-6'>
@@ -13,15 +14,13 @@ const FeatureCard = ({ feature, children }: Props) => {
           <div className='-mt-6'>
             <div className='flex justify-center'>
               <span className='inline-flex items-center justify-center rounded-md bg-gradient-to-r from-sky-400 to-sky-600 p-3 shadow-lg'>
-                {feature.icon}
+                {icon}
               </span>
             </div>
             <div className='flex justify-center'>
-              <h3 className='mt-8 text-lg font-medium tracking-tight text-gray-900'>
-                {feature.name}
-              </h3>
+              <h3 className='mt-8 text-lg font-medium tracking-tight text-gray-900'>{title}</h3>
             </div>
-            {children}
+            <div className='mt-8 space-y-3'>{children}</div>
           </div>
         </div>
       </div>
