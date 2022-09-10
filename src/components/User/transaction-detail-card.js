@@ -2,14 +2,15 @@
 
 import DateFormatter from '../../library/DateFormatter'
 import MoneyFormatter from '../../library/MoneyFormatter'
-import TwoColLayout from '../two-col-layout'
+import TwoColLayout from '../../CustomComponents/two-col-layout'
+import enums from '../../configs/enums'
 
 type Props = {
   item: Object,
 }
 
-const DetailCard = ({ item }: Props) => {
-  console.log('item', item)
+const TransactionDetailCard = ({ item }: Props) => {
+  const isWithdraw = item?.transaction_type === enums.transactionTypes.withdraw.value
   return (
     <>
       <div className='grid grid-cols-1 gap-4'>
@@ -20,16 +21,19 @@ const DetailCard = ({ item }: Props) => {
           <TwoColLayout
             leftColContent={
               <>
-                <p className='text-sm font-medium text-gray-900'>{item?.name}</p>
                 <p className='text-sm font-medium text-gray-900'>
-                  Date: {DateFormatter.parseIso(item?.created_at)}
+                  {enums.transactionTypes.findByValue(item?.transaction_type)?.name}
+                </p>
+                <p className='text-sm font-medium text-gray-900'>
+                  ${MoneyFormatter.toDollars(item?.transaction_amount)}
                 </p>
               </>
             }
             rightColContent={
               <>
                 <p className='text-sm font-medium text-gray-900'>
-                  ${MoneyFormatter.toDollars(item?.cost)}
+                  {isWithdraw ? 'To' : 'From'}{' '}
+                  {isWithdraw ? item?.receiver_name : item?.originator_name}
                 </p>
                 <p className='truncate text-sm text-gray-500'>Status</p>
               </>
@@ -43,4 +47,4 @@ const DetailCard = ({ item }: Props) => {
   )
 }
 
-export default DetailCard
+export default TransactionDetailCard

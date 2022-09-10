@@ -6,9 +6,11 @@ import { useUserContext } from '../HOC/withUserContext'
 import { useParams } from 'react-router-dom'
 import Icon from '../CustomComponents/Icon'
 import FeatureCard from '../CustomComponents/Card/feature-card'
-import DetailCard from '../CustomComponents/Card/detail-card'
+import ChoreDetailCard from '../components/User/chore-detail-card'
 import Page from '../CustomComponents/Page'
-import UserSummarySection from '../components/Users/UserSummarySection'
+import UserSummarySection from '../components/User/UserSummarySection'
+import User from '../api/_entities/user'
+import TransactionDetailCard from '../components/User/transaction-detail-card'
 
 type Props = {
   title: String,
@@ -23,7 +25,7 @@ const UserDetailsPage = ({ title }: Props) => {
   useEffect(() => {
     if (!!authUser?.api_token) {
       getUser(authUser?.api_token, id).then(data => {
-        setUser(data)
+        setUser(User(data))
       })
     }
   }, [authUser])
@@ -51,6 +53,17 @@ const UserDetailsPage = ({ title }: Props) => {
     [user?.chores, user?.transactions]
   )
 
+  const renderDetailCard = item => {
+    switch (item?._type) {
+      case 'chore':
+        return <ChoreDetailCard key={item?.id} item={item} />
+      case 'transaction':
+        return <TransactionDetailCard key={item?.id} item={item} />
+      default:
+        return null
+    }
+  }
+
   return (
     <>
       <Page
@@ -58,9 +71,7 @@ const UserDetailsPage = ({ title }: Props) => {
         overviewSection={<UserSummarySection user={user} />}
         gridSection={features.map(feature => (
           <FeatureCard key={feature?.id} icon={feature?.icon} title={feature?.title}>
-            {feature?.items?.map(item => (
-              <DetailCard key={item?.id} item={item} />
-            ))}
+            {feature?.items?.map(item => renderDetailCard(item))}
           </FeatureCard>
         ))}
       ></Page>
