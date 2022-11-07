@@ -3,12 +3,14 @@
 import ConfigTools from '../ConfigTools'
 
 export default ConfigTools({
-  transfer: {
+  credit: {
     value: 1,
-    name: 'Transfer',
+    name: 'Credit',
+    displayName: 'Withdraw',
   },
-  ach: {
+  debit: {
     value: 2,
-    name: 'ACH',
+    name: 'Debit',
+    displayName: 'Deposit',
   },
 })

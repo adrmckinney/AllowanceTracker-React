@@ -15,7 +15,7 @@ export const useUserContext = validate => {
 
 export const withUserContext =
   Component =>
-  ({ ...rest }) => {
+  ({ ...rest }): JSX.Element => {
     const storedAuthUser = localStorage.getItem('authUser')
     const [authUser, setAuthUser] = useState(null)
 

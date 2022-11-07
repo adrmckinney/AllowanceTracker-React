@@ -10,7 +10,7 @@ import ConditionalRender from '../../CustomComponents/conditional-render'
 import InputErrorMessage from '../../CustomComponents/input-error-message'
 import { useUserContext } from '../../HOC/withUserContext'
 
-const LoginPage = () => {
+const LoginPage = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false)
   const { handleChange, inputState: input } = useFormContext()
   const { setAuthUser } = useUserContext()

@@ -15,7 +15,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const NavBar = () => {
+const NavBar = (): JSX.Element => {
   const navigate = useNavigate()
   const { authUser, setAuthUser } = useUserContext()
   const { setHttpError } = useErrorContext()

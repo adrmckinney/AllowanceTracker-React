@@ -1,7 +1,5 @@
-// @flow
-
 import { useEffect, useMemo, useState } from 'react'
-import { getUser } from '../api/getUser'
+import { getAuthUser } from '../api/getAuthUser'
 import { useUserContext } from '../HOC/withUserContext'
 import { useParams } from 'react-router-dom'
 import Icon from '../CustomComponents/Icon'
@@ -12,19 +10,15 @@ import UserSummarySection from '../components/User/UserSummarySection'
 import User from '../api/_entities/user'
 import TransactionDetailCard from '../components/User/transaction-detail-card'
 
-type Props = {
-  title: String,
-}
-
-const UserDetailsPage = ({ title }: Props) => {
+const UserDetailsPage = ({ title: string }) => {
   const { id } = useParams()
   const { authUser } = useUserContext()
   const [user, setUser] = useState(null)
   console.log('user', user)
 
   useEffect(() => {
-    if (!!authUser?.api_token) {
-      getUser(authUser?.api_token, id).then(data => {
+    if (!!authUser?.api_token && typeof id !== 'undefined') {
+      getAuthUser(authUser?.api_token, id).then(data => {
         setUser(User(data))
       })
     }

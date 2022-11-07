@@ -13,7 +13,7 @@ const UserDetailsPage = lazy(() => import('./Pages/UserDetailsPage'))
 const RegistrationPage = lazy(() => import('./Pages/RegistrationPage'))
 const LoginPage = lazy(() => import('./Pages/Login/LoginPage'))
 
-function App() {
+function App(): JSX.Element {
   const { httpError } = useErrorContext()
 
   return (

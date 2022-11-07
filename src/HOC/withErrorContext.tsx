@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react'
 const ErrorStateContext = createContext()
 const SetErrorStateContext = createContext()
 
-export const useErrorContext = validate => {
+export const useErrorContext = (): any => {
   const httpError = useContext(ErrorStateContext)
   const setHttpError = useContext(SetErrorStateContext)
 
@@ -15,7 +15,7 @@ export const useErrorContext = validate => {
 
 export const withErrorContext =
   Component =>
-  ({ ...rest }) => {
+  ({ ...rest }): JSX.Element => {
     const [httpError, setHttpError] = useState(null)
 
     return (

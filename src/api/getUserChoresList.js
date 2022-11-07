@@ -2,7 +2,7 @@ import { apiUrl } from './routes'
 
 export function getUserChoresList(token, id) {
   return apiUrl
-    .get(`/user/${id}/chores`, {
+    .get(`/user/chores`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

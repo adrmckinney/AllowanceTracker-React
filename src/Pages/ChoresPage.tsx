@@ -1,4 +1,8 @@
-const ChoresPage = title => {
+interface Props {
+  title: string
+}
+
+const ChoresPage = ({ title }: Props): JSX.Element => {
   console.log('title', title)
   return (
     <>

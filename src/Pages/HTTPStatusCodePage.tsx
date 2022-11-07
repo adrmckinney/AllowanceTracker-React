@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useErrorContext } from '../HOC/withErrorContext'
 
-const HTTPStatusCodePage = () => {
+const HTTPStatusCodePage = (): JSX.Element => {
   const { httpError, setHttpError } = useErrorContext()
   const code = httpError === 'Unauthenticated.' ? 401 : 404
   console.log('httpError', httpError)

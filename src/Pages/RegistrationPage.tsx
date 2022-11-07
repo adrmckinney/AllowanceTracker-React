@@ -7,7 +7,7 @@ import { useFormContext, withFormContext } from '../HOC/withFormContext'
 import { useRegister as register } from '../api/useRegister'
 import useRegisterValidation from '../configs/ValidationRules/useRegisterValidation'
 
-const RegistrationPage = () => {
+const RegistrationPage = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { handleChange, inputState: input, touched, setTouched, handleTouched } = useFormContext()

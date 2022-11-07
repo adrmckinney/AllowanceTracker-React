@@ -1,9 +1,12 @@
-// @flow
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getUsersList } from '../api/getUsersList'
 import { useUserContext } from '../HOC/withUserContext'
 
-const UsersPage = () => {
+interface Props {
+  title: string
+}
+
+const UsersPage = ({ title }: Props): JSX.Element => {
   const { authUser } = useUserContext()
   const [users, setUsers] = useState(null)
   console.log('users', users)

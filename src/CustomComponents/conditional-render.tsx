@@ -1,12 +1,10 @@
-// @flow
-
 import * as React from 'react'
 
-type Props = {
-  children?: React.Node,
-  falseRender?: React.Node,
-  condition: boolean | (() => boolean),
-  isNullRender?: boolean, // instead of just rendering one or other render both but set display to none inherit depending on flag
+interface Props {
+  children?: JSX.Element
+  falseRender?: JSX.Element
+  condition: boolean | (() => boolean)
+  isNullRender?: boolean // instead of just rendering one or other render both but set display to none inherit depending on flag
 }
 
 const ConditionalRender = ({ children, falseRender, condition, isNullRender }: Props) => {
