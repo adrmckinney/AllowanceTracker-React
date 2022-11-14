@@ -1,16 +1,22 @@
-import { useState } from 'react'
-import Button from '../CustomComponents/Button'
+import Button from '../CustomComponents/Buttons/Button'
 import { fontThemes } from '../configs/global-styles'
 import { Link, useNavigate } from 'react-router-dom'
-import Input from '../CustomComponents/input'
-import { useFormContext, withFormContext } from '../HOC/withFormContext'
+import Input from '../CustomComponents/Input'
+
 import { useRegister as register } from '../api/useRegister'
 import useRegisterValidation from '../configs/ValidationRules/useRegisterValidation'
+import useFormHelpers from '../hooks/useFormHelpers'
+import { RegistrationInputType } from '../types/RegistrationInputType'
 
 const RegistrationPage = (): JSX.Element => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const { handleChange, inputState: input, touched, setTouched, handleTouched } = useFormContext()
+  const initialValues: RegistrationInputType = {
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+    confirm_password: '',
+  }
+  const { input, handleChange, handleTouched, touched } = useFormHelpers(initialValues)
   const {
     passwordValidations,
     confirmPasswordValidations,
@@ -20,11 +26,11 @@ const RegistrationPage = (): JSX.Element => {
   } = useRegisterValidation(input, touched)
   const navigate = useNavigate()
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     register(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
-        setTouched(false)
+        // setTouched(false)
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
@@ -70,7 +76,7 @@ const RegistrationPage = (): JSX.Element => {
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
               errors={apiErrors?.username}
-              fieldValidationIcon={apiErrors?.username?.[0]?.value}
+              fieldValidationIcon={apiErrors?.username?.[0]?.valid}
             />
 
             <Input
@@ -88,12 +94,10 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Password'
               name='password'
-              type={showPassword ? 'text' : 'password'}
+              type={'password'}
               id='password'
               theme='normal'
               required
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
               value={input?.password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
@@ -103,12 +107,10 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Confirm Password'
               name='confirm_password'
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={'password'}
               id='confirm_password'
               theme='normal'
               required
-              showPassword={showConfirmPassword}
-              setShowPassword={setShowConfirmPassword}
               value={input?.confirm_password}
               onChange={e => handleChange(e.target)}
               touched={e => handleTouched(e.target)}
@@ -133,4 +135,4 @@ const RegistrationPage = (): JSX.Element => {
   )
 }
 
-export default withFormContext(RegistrationPage)
+export default RegistrationPage

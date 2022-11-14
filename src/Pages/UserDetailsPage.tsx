@@ -1,62 +1,101 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getAuthUser } from '../api/getAuthUser'
-import { useUserContext } from '../HOC/withUserContext'
+import { getUser } from '../api/User/getUser'
 import { useParams } from 'react-router-dom'
 import Icon from '../CustomComponents/Icon'
 import FeatureCard from '../CustomComponents/Card/feature-card'
-import ChoreDetailCard from '../components/User/chore-detail-card'
+import ChoreSummaryCard from '../components/User/chore-summary-card'
 import Page from '../CustomComponents/Page'
 import UserSummarySection from '../components/User/UserSummarySection'
-import User from '../api/_entities/user'
-import TransactionDetailCard from '../components/User/transaction-detail-card'
+import TransactionSummaryCard from '../components/User/transaction-summary-card'
+import useAuthUser from '../hooks/useAuthUser'
+import { UserChoresSummaryType, UserTransactionsSummaryType, UserType } from '../types/UserType'
+import useQueryModifiers from '../hooks/useQueryModifiers'
+import useGetUserChoresList from '../api/UserChore/useGetUserChoresList'
+import { UserChoreType } from '../types/UserChoreType'
+import useGetUserTransactions from '../api/Transaction/useGetUserTransactions'
+import useGetUserTransfers from '../api/Transfer/useGetUserTransfers'
+import TransferSummaryCard from '../components/User/transfer-summary-card'
 
-const UserDetailsPage = ({ title: string }) => {
+type Props = {
+  title: string
+}
+
+type Feature = {
+  id: number
+  title: string
+  items: UserChoresSummaryType | UserTransactionsSummaryType | undefined
+  icon: React.ReactNode
+  component?: React.ReactNode
+}
+
+const UserDetailsPage = ({ title }: Props) => {
   const { id } = useParams()
-  const { authUser } = useUserContext()
-  const [user, setUser] = useState(null)
-  console.log('user', user)
+  const { authUser } = useAuthUser()
+  const [user, setUser] = useState<UserType | null>(null)
+  const [userChores, setUserChores] = useState<UserChoreType[] | null>(null)
+  const [transfers, setTransfers] = useState(null)
+  const [transactions, setTransactions] = useState(null)
+  const { setters } = useQueryModifiers()
+  const { getUserChores } = useGetUserChoresList()
+  const { getUserTransfers } = useGetUserTransfers()
+  const { getUserTransactions } = useGetUserTransactions()
+
+  const token = authUser?.api_token
 
   useEffect(() => {
-    if (!!authUser?.api_token && typeof id !== 'undefined') {
-      getAuthUser(authUser?.api_token, id).then(data => {
-        setUser(User(data))
+    if (!!token && typeof id !== 'undefined') {
+      getUser(token, id).then((data: UserType) => {
+        setUser(data)
       })
+
+      getUserChores(token, { modifiers: prepareModifiers('userChoreUserId') }).then(data =>
+        setUserChores(data?.chores)
+      )
+
+      getUserTransfers(token, { modifiers: prepareModifiers('transferUserId') }).then(data =>
+        setTransfers(data?.transfers)
+      )
+
+      getUserTransactions(token, { modifiers: prepareModifiers('transactionUserId') }).then(data =>
+        setTransactions(data?.transactions)
+      )
     }
-  }, [authUser])
+  }, [])
+
+  const prepareModifiers = (filterKey: string) => {
+    return setters.setMultipleModifierOptions({
+      resultsPerPage: 5,
+      filterKey: filterKey,
+      filterValue: authUser?.id,
+    })
+  }
 
   const features = useMemo(
-    () => [
+    (): Feature[] => [
       {
         id: 1,
         title: 'Chores',
         items: user?.chores,
         icon: <Icon icon='list' customIconStyle={'text-white mr-0'} />,
+        component: <ChoreSummaryCard userChores={userChores} />,
       },
       {
         id: 2,
-        title: 'Transactions',
+        title: 'Transfers',
         items: user?.transactions,
         icon: <Icon icon='money' customIconStyle={'text-white mr-0'} size='xl' />,
+        component: <TransferSummaryCard transfers={transfers} />,
       },
       {
         id: 3,
-        title: 'Simple Queues',
+        title: 'Transactions',
+        items: user?.transactions,
         icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
+        component: <TransactionSummaryCard transactions={transactions} />,
       },
     ],
-    [user?.chores, user?.transactions]
+    [user, userChores, transfers, transactions]
   )
-
-  const renderDetailCard = item => {
-    switch (item?._type) {
-      case 'chore':
-        return <ChoreDetailCard key={item?.id} item={item} />
-      case 'transaction':
-        return <TransactionDetailCard key={item?.id} item={item} />
-      default:
-        return null
-    }
-  }
 
   return (
     <>
@@ -64,9 +103,12 @@ const UserDetailsPage = ({ title: string }) => {
         title={title}
         overviewSection={<UserSummarySection user={user} />}
         gridSection={features.map(feature => (
-          <FeatureCard key={feature?.id} icon={feature?.icon} title={feature?.title}>
-            {feature?.items?.map(item => renderDetailCard(item))}
-          </FeatureCard>
+          <FeatureCard
+            key={feature?.title}
+            icon={feature?.icon}
+            title={feature?.title}
+            component={feature.component}
+          ></FeatureCard>
         ))}
       ></Page>
     </>

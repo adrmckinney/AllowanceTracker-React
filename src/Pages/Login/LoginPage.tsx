@@ -1,28 +1,36 @@
-import { useState } from 'react'
-import Button from '../../CustomComponents/Button'
+import Button from '../../CustomComponents/Buttons/Button'
 import { fontThemes } from '../../configs/global-styles'
 import { Link, useNavigate } from 'react-router-dom'
-import Input from '../../CustomComponents/input'
-import { useFormContext, withFormContext } from '../../HOC/withFormContext'
 import { useLogin as login } from '../../api/useLogin'
 import useLoginValidation from '../../configs/ValidationRules/useLoginValidation'
 import ConditionalRender from '../../CustomComponents/conditional-render'
 import InputErrorMessage from '../../CustomComponents/input-error-message'
-import { useUserContext } from '../../HOC/withUserContext'
+import useFormHelpers from '../../hooks/useFormHelpers'
+import { LoginInputType } from '../../types/LoginInputType'
+import { FormChangeType } from '../../types/FormChangeType'
+import { FormFocusType } from '../../types/FormFocusType'
+import Icon from '../../CustomComponents/Icon'
 
 const LoginPage = (): JSX.Element => {
-  const [showPassword, setShowPassword] = useState(false)
-  const { handleChange, inputState: input } = useFormContext()
-  const { setAuthUser } = useUserContext()
-  const [touched, setTouched] = useState(false)
-  const { usernameError, passwordError, handleApiErrors, apiErrors } = useLoginValidation(input)
   const navigate = useNavigate()
 
-  const handleSubmit = e => {
+  const initialValues: LoginInputType = {
+    username: '',
+    password: '',
+  }
+
+  const { input, handleChange, handleTouched, touched } = useFormHelpers(initialValues)
+
+  const { usernameError, passwordError, handleApiErrors, apiErrors } = useLoginValidation(
+    input,
+    touched
+  )
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login(input).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
-        setTouched(false)
+        // setTouched(false)
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
@@ -44,7 +52,52 @@ const LoginPage = (): JSX.Element => {
           </div>
           <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
             <input type='hidden' name='remember' defaultValue='true' />
-            <div>
+            <div className='-space-y-px rounded-md shadow-sm'>
+              <div>
+                <label htmlFor='username' className='sr-only'>
+                  Username
+                </label>
+                <input
+                  id='username'
+                  name='username'
+                  type='username'
+                  value={input?.username}
+                  required
+                  className='relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
+                  placeholder='Username'
+                  onChange={(e: FormChangeType) => handleChange(e.target)}
+                  onBlur={(e: FormFocusType) => handleTouched(e.target)}
+                />
+                <ConditionalRender condition={usernameError.value}>
+                  <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
+                    <Icon icon='exclamation' iconStatus='danger' />
+                  </div>
+                </ConditionalRender>
+              </div>
+              <div>
+                <label htmlFor='password' className='sr-only'>
+                  Password
+                </label>
+                <input
+                  id='password'
+                  name='password'
+                  type='password'
+                  required
+                  className='relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
+                  placeholder='Password'
+                  value={input?.password}
+                  onChange={(e: FormChangeType) => handleChange(e.target)}
+                  onBlur={(e: FormFocusType) => handleTouched(e.target)}
+                />
+                <ConditionalRender condition={passwordError.value}>
+                  <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
+                    <Icon icon='exclamation' iconStatus='danger' />
+                  </div>
+                </ConditionalRender>
+              </div>
+            </div>
+
+            {/* <div>
               <Input
                 hiddenLabel
                 name='username'
@@ -53,8 +106,8 @@ const LoginPage = (): JSX.Element => {
                 theme='stackedTop'
                 required
                 placeholder='Username'
-                value={input?.username}
-                onChange={e => handleChange(e.target)}
+                value={input?.['username']}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e.target)}
                 touched={() => setTouched(true)}
                 fieldValidationIcon={usernameError.value}
               />
@@ -71,14 +124,12 @@ const LoginPage = (): JSX.Element => {
                 }}
                 required
                 placeholder='Password'
-                showPassword={showPassword}
-                setShowPassword={setShowPassword}
-                value={input?.password}
+                value={input?.['password']}
                 onChange={e => handleChange(e.target)}
                 touched={() => setTouched(true)}
                 fieldValidationIcon={passwordError.value}
               />
-            </div>
+            </div> */}
 
             <ConditionalRender condition={usernameError.value}>
               <InputErrorMessage
@@ -132,4 +183,4 @@ const LoginPage = (): JSX.Element => {
   )
 }
 
-export default withFormContext(LoginPage)
+export default LoginPage

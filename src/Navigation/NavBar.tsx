@@ -8,33 +8,39 @@ import NavHamburgerMenuButton from './NavHamburgerMenuButton'
 import DefaultTransition from '../CustomComponents/DefaultTransition'
 import ProfileImage from './profile-image'
 import { logoutUser } from '../api/logoutUser'
-import { useUserContext } from '../HOC/withUserContext'
-import { useErrorContext } from '../HOC/withErrorContext'
+import useAuthUser from '../hooks/useAuthUser'
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+type NavLinks = {
+  title: string
+  path: string
+  condition: boolean
+}[]
+
+type ProfileLinks = {
+  title: string
+  path: string
+  condition: boolean
+  onClick?: () => void
+}[]
 
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate()
-  const { authUser, setAuthUser } = useUserContext()
-  const { setHttpError } = useErrorContext()
+  const { authUser } = useAuthUser()
   const isLoggedIn = true
 
   const handleLogout = () => {
     logoutUser(authUser?.api_token).then(data => {
       if (data?.hasOwnProperty('errorMessage')) {
-        setHttpError(data?.errorMessage)
+        // setHttpError(data?.errorMessage)
         navigate('/error-page')
       } else if (data?.isLoggedOut) {
         localStorage.removeItem('authUser')
-        setAuthUser(null)
         navigate('/login')
       }
     })
   }
 
-  const navLinks = [
+  const navLinks: NavLinks = [
     {
       title: 'Login',
       path: '/login',
@@ -57,7 +63,7 @@ const NavBar = (): JSX.Element => {
     },
   ]
 
-  const profileLinks = [
+  const profileLinks: ProfileLinks = [
     {
       title: 'My Page',
       path: `/user/${authUser?.id}`,
@@ -82,6 +88,7 @@ const NavBar = (): JSX.Element => {
       title: 'Sign out',
       onClick: handleLogout,
       condition: isLoggedIn,
+      path: '',
     },
   ]
 
@@ -91,10 +98,10 @@ const NavBar = (): JSX.Element => {
       {({ open }) => (
         <>
           <nav
-            className={classNames(
+            className={[
               open ? 'bg-sky-900' : 'bg-transparent',
-              'relative z-10 border-b border-teal-500 border-opacity-25 lg:border-none lg:bg-transparent'
-            )}
+              'relative z-10 border-b border-teal-500 border-opacity-25 lg:border-none lg:bg-transparent',
+            ].join(' ')}
           >
             <div className='max-w-7xl mx-auto px-2 sm:px-4 lg:px-8'>
               <div className='flex justify-between h-16 lg:border-b lg:border-sky-800'>
@@ -141,10 +148,10 @@ const NavBar = (): JSX.Element => {
                             {({ active }) => (
                               <Link
                                 to={!link?.onClick ? link?.path : ''}
-                                className={classNames(
+                                className={[
                                   active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}
+                                  'block px-4 py-2 text-sm text-gray-700',
+                                ].join(' ')}
                                 onClick={!!link?.onClick ? link?.onClick : () => {}}
                               >
                                 {link?.title}
@@ -200,10 +207,10 @@ const NavBar = (): JSX.Element => {
           </nav>
           <div
             aria-hidden='true'
-            className={classNames(
+            className={[
               // open ? 'bottom-0' : 'inset-y-0',
-              'bottom-0 absolute inset-x-0 left-1/2 w-full -translate-x-1/2 transform overflow-hidden lg:inset-y-0'
-            )}
+              'bottom-0 absolute inset-x-0 left-1/2 w-full -translate-x-1/2 transform overflow-hidden lg:inset-y-0',
+            ].join(' ')}
           >
             <div className='absolute inset-0 flex'>
               <div className='h-full w-1/2' style={{ backgroundColor: '#0a527b' }} />

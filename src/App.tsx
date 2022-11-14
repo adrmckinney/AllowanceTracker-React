@@ -1,10 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import ConditionalRender from './CustomComponents/conditional-render'
-import { useErrorContext, withErrorContext } from './HOC/withErrorContext'
-import { withUserContext } from './HOC/withUserContext'
+import UserContext from './context/UserContext'
 import NavBar from './Navigation/NavBar'
-import HTTPStatusCodePage from './Pages/HTTPStatusCodePage'
 
 const ChoresPage = lazy(() => import('./Pages/ChoresPage'))
 const TransactionsPage = lazy(() => import('./Pages/TransactionsPage'))
@@ -14,16 +11,13 @@ const RegistrationPage = lazy(() => import('./Pages/RegistrationPage'))
 const LoginPage = lazy(() => import('./Pages/Login/LoginPage'))
 
 function App(): JSX.Element {
-  const { httpError } = useErrorContext()
-
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <ConditionalRender condition={!httpError}>
+    <UserContext.Provider value={'something'}>
+      <div className='App'>
+        <header className='App-header'>
           <NavBar />
-        </ConditionalRender>
-      </header>
-      <Suspense fallback={'Loading...'}>
+        </header>
+        {/* <Suspense fallback={'Loading...'}> */}
         <Routes>
           <Route path='/' element={<div>Landing Page</div>} />
           <Route path='/transactions' element={<TransactionsPage title={'Transactions Page'} />} />
@@ -32,11 +26,11 @@ function App(): JSX.Element {
           <Route path='/registration' element={<RegistrationPage />} />
           <Route path='/users' element={<UsersPage title={'Users Page'} />} />
           <Route path='/user/:id' element={<UserDetailsPage title={'User Page'} />} />
-          <Route path='/error-page' element={<HTTPStatusCodePage />} />
         </Routes>
-      </Suspense>
-    </div>
+        {/* </Suspense> */}
+      </div>
+    </UserContext.Provider>
   )
 }
 
-export default withErrorContext(withUserContext(App))
+export default App
