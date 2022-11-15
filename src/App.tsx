@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useReducer, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import UserContext from './context/UserContext'
 import NavBar from './Navigation/NavBar'
@@ -11,8 +11,10 @@ const RegistrationPage = lazy(() => import('./Pages/RegistrationPage'))
 const LoginPage = lazy(() => import('./Pages/Login/LoginPage'))
 
 function App(): JSX.Element {
+  const [userContext, setUserContext] = useState({})
+
   return (
-    <UserContext.Provider value={'something'}>
+    <UserContext.Provider value={{ userContext, setUserContext }}>
       <div className='App'>
         <header className='App-header'>
           <NavBar />

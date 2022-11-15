@@ -56,7 +56,7 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Name'
               name='name'
-              type='name'
+              type='text'
               id='name'
               theme='normal'
               required
@@ -68,7 +68,7 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Username'
               name='username'
-              type='username'
+              type='text'
               id='username'
               theme='normal'
               required
@@ -94,7 +94,7 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Password'
               name='password'
-              type={'password'}
+              type='password'
               id='password'
               theme='normal'
               required
@@ -107,7 +107,7 @@ const RegistrationPage = (): JSX.Element => {
             <Input
               label='Confirm Password'
               name='confirm_password'
-              type={'password'}
+              type='password'
               id='confirm_password'
               theme='normal'
               required

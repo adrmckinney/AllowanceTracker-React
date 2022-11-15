@@ -5,6 +5,7 @@ export type ColorThemes = {
   link: LinkColorTheme
   navLink: NavLinkColorTheme
   badge: BadgeColorTheme
+  actionIconTextColor: ActionColorTheme
 }
 
 export type SizeThemes = {
@@ -60,6 +61,13 @@ type NavLinkColorTheme = {
 }
 
 type BadgeColorTheme = {
+  success: string
+  pending: string
+  warning: string
+  danger: string
+}
+
+type ActionColorTheme = {
   success: string
   pending: string
   warning: string

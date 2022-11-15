@@ -19,7 +19,7 @@ interface Props {
   label?: string
   labelRight?: boolean
   value: string
-  required: boolean
+  required?: boolean
   icon?: string
   inputStyles?: object
   labelStyles?: object
@@ -35,6 +35,7 @@ interface Props {
   overwriteIconStyle?: object
   onChange: (e: FormChangeType) => any
   onKeyDown?: () => {}
+  defaultValue?: any
 }
 
 const Input = ({
@@ -65,6 +66,7 @@ const Input = ({
   overwriteIconStyle,
   onChange,
   onKeyDown,
+  defaultValue = '',
 }: Props): JSX.Element => {
   return (
     <>

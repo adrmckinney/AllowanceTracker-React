@@ -1,10 +1,15 @@
-import { useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import useUpsertUser from '../../api/User/useUpsertUser'
 import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import { colorThemes } from '../../configs/global-styles'
+import UserContext from '../../context/UserContext'
 import IconButton from '../../CustomComponents/Buttons/IconButton'
 import ConditionalRender from '../../CustomComponents/conditional-render'
+import Input from '../../CustomComponents/Input'
 import useAuthUser from '../../hooks/useAuthUser'
+import useFormHelpers from '../../hooks/useFormHelpers'
 import MoneyFormatter from '../../library/MoneyFormatter'
+import { FormChangeType } from '../../types/FormChangeType'
 import { UserType } from '../../types/UserType'
 
 type Props = {
@@ -17,31 +22,77 @@ type EditingState = {
   number: boolean
 }
 
-const UserSummarySection = ({ user }: Props) => {
+type Data = {
+  title: string
+  inputName?: string
+  datum: string | number
+  condition: boolean
+  canEdit: boolean
+}
+
+type InitialValues = {
+  username: string
+  email: string
+  number: number
+}
+
+const UserSummarySection = ({ user }: Props): JSX.Element => {
   const [isEditing, setIsEditing] = useState<EditingState>({
     username: false,
     email: false,
     number: false,
   })
-  const { isChild, isParentOrHigher } = useAuthUser()
+  const { isChild, isParentOrHigher, authUser } = useAuthUser()
+  const { upsertUser } = useUpsertUser()
 
-  const handleIsEditing = (title: string) => {
+  const {
+    handleChange,
+    input,
+    setInput: setInitialValues,
+  } = useFormHelpers<InitialValues>({
+    username: user?.username,
+    email: user?.email,
+    number: 2145627133,
+  })
+
+  useEffect(() => {
+    setInitialValues({ username: user?.username, email: user?.email, number: 2145627133 })
+  }, [user])
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const updatedFieldKey = Object.entries(isEditing)?.filter(
+      ([key, value]: [key: string, value: boolean]) => value
+    )[0][0]
+
+    const upsertInput = {
+      id: user?.id,
+      [updatedFieldKey]: input?.[updatedFieldKey],
+    }
+
+    upsertUser(authUser?.api_token, upsertInput).then(data => {
+      handleCancel()
+    })
+  }
+
+  const handleIsEditing = (inputName: string) => {
     const newEditing = { ...isEditing }
 
-    switch (title?.toLowerCase()) {
+    switch (inputName) {
       case 'username':
         newEditing['username'] = true
         newEditing['email'] = false
         newEditing['number'] = false
         setIsEditing(newEditing)
         break
-      case 'email address':
+      case 'email':
         newEditing['username'] = false
         newEditing['email'] = true
         newEditing['number'] = false
         setIsEditing(newEditing)
         break
-      case 'phone number':
+      case 'number':
         newEditing['username'] = false
         newEditing['email'] = false
         newEditing['number'] = true
@@ -49,12 +100,21 @@ const UserSummarySection = ({ user }: Props) => {
         break
     }
   }
-  console.log('isEditing', isEditing)
+
+  const handleCancel = () => {
+    const newEditing = { ...isEditing }
+
+    newEditing['username'] = false
+    newEditing['email'] = false
+    newEditing['number'] = false
+    setIsEditing(newEditing)
+  }
 
   const data = useMemo(
-    () => [
+    (): Data[] => [
       {
         title: 'Username',
+        inputName: 'username',
         datum: user?.username,
         condition: true,
         canEdit: true,
@@ -67,49 +127,51 @@ const UserSummarySection = ({ user }: Props) => {
       },
       {
         title: 'Email address',
+        inputName: 'email',
         datum: user?.email,
         condition: true,
         canEdit: true,
       },
       {
         title: 'Phone Number',
+        inputName: 'number',
         datum: '(214) 562-7133',
         condition: true,
         canEdit: true,
       },
       {
         title: 'Chores Pending',
-        datum: user?.chores.pendingChoresCount,
+        datum: user?.chores?.pendingChoresCount,
         condition: isChild(user),
         canEdit: false,
       },
       {
         title: 'Chores Rejected',
-        datum: user?.chores.rejectedChoresCount,
+        datum: user?.chores?.rejectedChoresCount,
         condition: isChild(user),
         canEdit: false,
       },
       {
         title: 'Chores Completed',
-        datum: user?.chores.completedChoresCount,
+        datum: user?.chores?.completedChoresCount,
         condition: isChild(user),
         canEdit: false,
       },
       {
         title: 'Income from Chores',
-        datum: `$${MoneyFormatter.toDollars(user?.chores.totalChoresIncome)}`,
+        datum: `$${MoneyFormatter.toDollars(user?.chores?.totalChoresIncome)}`,
         condition: isChild(user),
         canEdit: false,
       },
       {
         title: 'Total Spend',
-        datum: `$${MoneyFormatter.toDollars(user?.transactions.totalDebit)}`,
+        datum: `$${MoneyFormatter.toDollars(user?.transactions?.totalDebit)}`,
         condition: isChild(user),
         canEdit: false,
       },
       {
         title: 'Total Deposit',
-        datum: `$${MoneyFormatter.toDollars(user?.transactions.totalCredit)}`,
+        datum: `$${MoneyFormatter.toDollars(user?.transactions?.totalCredit)}`,
         condition: isChild(user),
         canEdit: false,
       },
@@ -137,28 +199,67 @@ const UserSummarySection = ({ user }: Props) => {
                 </p>
               </ConditionalRender>
             </div>
-            <div className='border-t border-gray-200 px-4 py-5 sm:px-6'>
+            <form onSubmit={handleSubmit} className='border-t border-gray-200 px-4 py-5 sm:px-6'>
               <dl className='grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2'>
                 {data?.map(datum => (
                   <ConditionalRender key={datum?.title} condition={datum?.condition}>
                     <div className='sm:col-span-1'>
                       <dt className='text-sm font-medium text-gray-500'>{datum?.title}</dt>
-                      <dd className='mt-1 text-sm text-gray-900'>
-                        {datum?.datum}
-                        <ConditionalRender condition={datum.canEdit}>
-                          <IconButton
-                            icon={'edit'}
-                            size={'xs'}
-                            onClick={() => handleIsEditing(datum.title)}
-                            classNames='pl-2'
-                          />
-                        </ConditionalRender>
-                      </dd>
+                      <ConditionalRender
+                        condition={!isEditing?.[datum?.inputName]}
+                        falseRender={
+                          <>
+                            <div className='flex items-center'>
+                              <div className='w-1/2'>
+                                <Input
+                                  type='text'
+                                  name={datum?.inputName}
+                                  theme='normal'
+                                  hiddenLabel
+                                  value={input?.[datum?.inputName]}
+                                  onChange={(e: FormChangeType) => handleChange(e?.target)}
+                                />
+                              </div>
+                              <div className='flex items-center justify-center pl-2'>
+                                <IconButton
+                                  icon='xicon'
+                                  size='lg'
+                                  onClick={handleCancel}
+                                  customIconStyle={[colorThemes.actionIconTextColor.danger].join(
+                                    ' '
+                                  )}
+                                />
+                                <IconButton
+                                  icon='check'
+                                  type='submit'
+                                  size='lg'
+                                  customIconStyle={[
+                                    'text-bold',
+                                    colorThemes.actionIconTextColor.success,
+                                  ].join(' ')}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        }
+                      >
+                        <dd className='mt-1 text-sm text-gray-900'>
+                          {datum?.datum}
+                          <ConditionalRender condition={datum?.canEdit}>
+                            <IconButton
+                              icon={'edit'}
+                              size={'xs'}
+                              onClick={() => handleIsEditing(datum?.inputName)}
+                              classNames='pl-2'
+                            />
+                          </ConditionalRender>
+                        </dd>
+                      </ConditionalRender>
                     </div>
                   </ConditionalRender>
                 ))}
               </dl>
-            </div>
+            </form>
           </div>
         </div>
       </div>

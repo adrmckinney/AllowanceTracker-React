@@ -26,7 +26,6 @@ const ChoreDetailCard = ({ userChores }: Props) => {
       return '' + chore?.created_at
     }
   }
-  console.log('userChores', userChores)
 
   return (
     <>
@@ -44,9 +43,7 @@ const ChoreDetailCard = ({ userChores }: Props) => {
               }
               rightColContent={
                 <>
-                  <p
-                  // className='text-sm font-medium text-gray-900'
-                  >
+                  <p className='text-sm font-medium text-gray-900'>
                     <StatusBadge
                       title={ChoreStatuses.findByValue(chore?.chore_status)?.name}
                       colorStatus={ChoreStatuses.findByValue(chore?.chore_status)?.statusColorTheme}

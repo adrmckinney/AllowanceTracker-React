@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
-import { getUser } from '../api/User/getUser'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Icon from '../CustomComponents/Icon'
 import FeatureCard from '../CustomComponents/Card/feature-card'
@@ -15,6 +14,8 @@ import { UserChoreType } from '../types/UserChoreType'
 import useGetUserTransactions from '../api/Transaction/useGetUserTransactions'
 import useGetUserTransfers from '../api/Transfer/useGetUserTransfers'
 import TransferSummaryCard from '../components/User/transfer-summary-card'
+import useGetUser from '../api/User/useGetUser'
+import UserContext from '../context/UserContext'
 
 type Props = {
   title: string
@@ -31,21 +32,23 @@ type Feature = {
 const UserDetailsPage = ({ title }: Props) => {
   const { id } = useParams()
   const { authUser } = useAuthUser()
-  const [user, setUser] = useState<UserType | null>(null)
+  // const [user, setUser] = useState<UserType | null>(null)
   const [userChores, setUserChores] = useState<UserChoreType[] | null>(null)
   const [transfers, setTransfers] = useState(null)
   const [transactions, setTransactions] = useState(null)
   const { setters } = useQueryModifiers()
+  const { getUser } = useGetUser()
   const { getUserChores } = useGetUserChoresList()
   const { getUserTransfers } = useGetUserTransfers()
   const { getUserTransactions } = useGetUserTransactions()
+  const { userContext: user, setUserContext } = useContext(UserContext)
 
   const token = authUser?.api_token
 
   useEffect(() => {
     if (!!token && typeof id !== 'undefined') {
       getUser(token, id).then((data: UserType) => {
-        setUser(data)
+        setUserContext(data)
       })
 
       getUserChores(token, { modifiers: prepareModifiers('userChoreUserId') }).then(data =>

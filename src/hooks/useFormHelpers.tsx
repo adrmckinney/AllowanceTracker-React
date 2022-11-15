@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 interface ChangeProps {
   name: string
-  value: string
+  value: string | number
 }
 
 interface TouchedProps {
@@ -10,7 +10,7 @@ interface TouchedProps {
 }
 
 const useFormHelpers = <T,>(initialValues: T) => {
-  const [input, setInput] = useState(initialValues)
+  const [input, setInput] = useState<T>()
   const [touched, setTouched] = useState({})
 
   const handleChange = ({ name, value }: ChangeProps) =>
@@ -28,6 +28,7 @@ const useFormHelpers = <T,>(initialValues: T) => {
   return {
     handleChange,
     handleTouched,
+    setInput,
     input,
     touched,
   }

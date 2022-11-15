@@ -56,6 +56,12 @@ export const colorThemes: ColorThemes = {
     warning: 'bg-yellow-100 text-yellow-800',
     danger: 'bg-red-100 text-red-800',
   },
+  actionIconTextColor: {
+    success: 'text-green-800 hover:text-green-700',
+    pending: 'text-yellow-800 hover:text-yellow-700',
+    warning: 'text-yellow-800 hover:text-yellow-700',
+    danger: 'text-red-800 hover:text-red-700',
+  },
 }
 
 export const sizeThemes: SizeThemes = {
