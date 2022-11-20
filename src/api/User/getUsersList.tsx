@@ -1,10 +1,10 @@
 import { apiUrl } from '../routes'
 
-export function getUsersList(token: string) {
+export function getUsersList(api_token: string) {
   return apiUrl
     .get('/users', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${api_token}`,
       },
     })
     .then(res => res.data)

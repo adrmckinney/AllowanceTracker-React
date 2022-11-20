@@ -1,10 +1,10 @@
 import { apiUrl } from './routes'
 
-export function logoutUser(token: string) {
+export function logoutUser(api_token: string) {
   return apiUrl
     .post('/logout', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${api_token}`,
       },
     })
     .then(res => res.data)

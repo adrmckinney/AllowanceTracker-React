@@ -67,7 +67,7 @@ type Icons = {
   eyeSlash: React.ReactNode
   bell: React.ReactNode
   magnifyingGlass: React.ReactNode
-  money: React.ReactNode
+  dollar: React.ReactNode
   list: React.ReactNode
   exclamation: React.ReactNode
   lockClosed: React.ReactNode
@@ -193,7 +193,7 @@ const Icon = ({
         aria-hidden='true'
       />
     ),
-    money: (
+    dollar: (
       <CurrencyDollarIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overwriteIconStyle}

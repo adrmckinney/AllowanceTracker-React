@@ -11,7 +11,7 @@ interface Props {
   disabled?: boolean
   icon?: string
   iconStatus?: string
-  onClick?: () => {}
+  onClick?: () => void
   to?: string
   customClassName?: string
   overwriteButtonStyle?: object

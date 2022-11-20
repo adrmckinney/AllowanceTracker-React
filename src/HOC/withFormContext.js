@@ -17,7 +17,7 @@
 //   const setInitialValues = useContext(SetInitialValuesContext)
 //   const touched = useContext(FieldTouchedContext)
 //   const setTouched = useContext(SetFieldTouchedContext)
-//   const handleTouched = useContext(HandleTouchedContext)
+//   const handleOnBlur = useContext(HandleTouchedContext)
 
 //   return {
 //     inputState,
@@ -27,7 +27,7 @@
 //     setInitialValues,
 //     touched,
 //     setTouched,
-//     handleTouched,
+//     handleOnBlur,
 //   }
 // }
 
@@ -45,7 +45,7 @@
 //       }))
 //     }
 
-//     const handleTouched = ({ name }) => {
+//     const handleOnBlur = ({ name }) => {
 //       setTouched(touched => ({
 //         ...touched,
 //         [name]: true,
@@ -60,7 +60,7 @@
 //               <SetInitialValuesContext.Provider value={setInitialValues}>
 //                 <SetFieldTouchedContext.Provider value={setTouched}>
 //                   <InputChangeContext.Provider value={handleChange}>
-//                     <HandleTouchedContext.Provider value={handleTouched}>
+//                     <HandleTouchedContext.Provider value={handleOnBlur}>
 //                       <Component {...rest} />
 //                     </HandleTouchedContext.Provider>
 //                   </InputChangeContext.Provider>

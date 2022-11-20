@@ -19,11 +19,11 @@ class MoneyFormatter {
     return Math.round(100 * cleanMoney)
   }
 
-  cleanMoney(money: string) {
+  cleanMoney(money: string): number {
     return parseFloat(typeof money === 'string' ? money.replace(/[$,]/g, '') : money)
   }
 
-  convertMoneyStringToPennies(value: number | string) {
+  convertMoneyStringToPennies(value: string) {
     const valueNoPeriods = value?.toString().replace(/[.]/g, '')
     return valueNoPeriods !== '' ? this.cleanMoney(valueNoPeriods) : value
   }

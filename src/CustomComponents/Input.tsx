@@ -1,4 +1,4 @@
-import { FocusEventHandler, LegacyRef } from 'react'
+import { LegacyRef } from 'react'
 import ConditionalRender from './conditional-render'
 import HorizontalLayout from './horizontal-layout'
 import { fontThemes, inputThemes } from '../configs/global-styles'
@@ -18,7 +18,7 @@ interface Props {
   hiddenLabel?: boolean
   label?: string
   labelRight?: boolean
-  value: string
+  value: string | number
   required?: boolean
   icon?: string
   inputStyles?: object
@@ -28,14 +28,15 @@ interface Props {
   rows?: number
   ref?: LegacyRef<HTMLInputElement>
   errors?: Error[]
-  touched?: FocusEventHandler<HTMLInputElement>
+  handleOnBlur?: (e: FormChangeType) => boolean
+  touched?: { [index: string]: boolean } | null
   iconSize?: string
   iconStatus?: string
   customIconStyle?: string
   overwriteIconStyle?: object
   onChange: (e: FormChangeType) => any
-  onKeyDown?: () => {}
-  defaultValue?: any
+  onKeyDown?: (e: FormChangeType) => any
+  autoFocus?: boolean
 }
 
 const Input = ({
@@ -59,6 +60,7 @@ const Input = ({
   rows = 4,
   ref,
   errors,
+  handleOnBlur,
   touched,
   iconSize,
   iconStatus,
@@ -66,7 +68,7 @@ const Input = ({
   overwriteIconStyle,
   onChange,
   onKeyDown,
-  defaultValue = '',
+  autoFocus = false,
 }: Props): JSX.Element => {
   return (
     <>
@@ -114,7 +116,8 @@ const Input = ({
             aria-invalid={!!fieldValidationIcon}
             style={{ ...inputStyles }}
             onChange={onChange}
-            onBlur={touched}
+            onBlur={handleOnBlur}
+            onKeyDown={onKeyDown}
             className={[
               icon ? 'pl-10' : 'px-3',
               'py-2 ',
@@ -122,6 +125,7 @@ const Input = ({
               `${inputThemes}.${theme}`,
               'block w-full',
             ].join(' ')}
+            autoFocus={autoFocus}
           />
           <ConditionalRender condition={fieldValidationIcon}>
             <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
@@ -129,12 +133,12 @@ const Input = ({
             </div>
           </ConditionalRender>
         </div>
+        {errors?.map((error: Error) => (
+          <ConditionalRender key={error?.message} condition={!error?.valid && !!touched?.[name]}>
+            <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
+          </ConditionalRender>
+        ))}
       </div>
-      {errors?.map((error: Error) => (
-        <ConditionalRender key={error?.message} condition={error?.valid}>
-          <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
-        </ConditionalRender>
-      ))}
     </>
   )
 }

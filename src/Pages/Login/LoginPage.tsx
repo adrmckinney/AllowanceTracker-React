@@ -19,7 +19,7 @@ const LoginPage = (): JSX.Element => {
     password: '',
   }
 
-  const { input, handleChange, handleTouched, touched } = useFormHelpers(initialValues)
+  const { input, handleChange, handleOnBlur, touched } = useFormHelpers(initialValues)
 
   const { usernameError, passwordError, handleApiErrors, apiErrors } = useLoginValidation(
     input,
@@ -34,7 +34,7 @@ const LoginPage = (): JSX.Element => {
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
-        navigate(`../user/${data.id}`)
+        navigate(`../user/${data?.id}`)
       }
     })
   }
@@ -66,7 +66,7 @@ const LoginPage = (): JSX.Element => {
                   className='relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
                   placeholder='Username'
                   onChange={(e: FormChangeType) => handleChange(e.target)}
-                  onBlur={(e: FormFocusType) => handleTouched(e.target)}
+                  onBlur={(e: FormFocusType) => handleOnBlur(e.target)}
                 />
                 <ConditionalRender condition={usernameError.value}>
                   <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
@@ -87,7 +87,7 @@ const LoginPage = (): JSX.Element => {
                   placeholder='Password'
                   value={input?.password}
                   onChange={(e: FormChangeType) => handleChange(e.target)}
-                  onBlur={(e: FormFocusType) => handleTouched(e.target)}
+                  onBlur={(e: FormFocusType) => handleOnBlur(e.target)}
                 />
                 <ConditionalRender condition={passwordError.value}>
                   <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>

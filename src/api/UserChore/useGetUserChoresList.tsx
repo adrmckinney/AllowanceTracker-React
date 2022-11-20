@@ -1,10 +1,10 @@
 import { apiUrl } from '../routes'
 
 const useGetUserChoresList = () => {
-  const getUserChores = async <T,>(token: string, input: T) => {
+  const getUserChores = async <T,>(api_token: string, input: T) => {
     const response = await apiUrl.post(`/user/chores`, input, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${api_token}`,
       },
     })
 

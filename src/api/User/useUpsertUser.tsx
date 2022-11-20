@@ -3,22 +3,22 @@ import useGetUser from './useGetUser'
 
 const useUpsertUser = () => {
   const { getUser } = useGetUser()
-  const upsertUser = async <T,>(token: string, input: T) => {
+  const upsertUser = async <T,>(api_token: string, input: T) => {
     const response = await apiUrl.post('/user/upsert', input, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${api_token}`,
       },
     })
 
-    invalidateUser(token, response?.data.id)
+    invalidateUser(api_token, response?.data.id)
 
     return {
       userData: response.data,
     }
   }
 
-  const invalidateUser = (token: string, id: number | string) => {
-    getUser(token, id).then(res => res)
+  const invalidateUser = (api_token: string, id: number | string) => {
+    getUser(api_token, id).then(res => res)
   }
 
   return { upsertUser, invalidateUser }

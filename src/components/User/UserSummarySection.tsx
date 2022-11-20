@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useUpsertUser from '../../api/User/useUpsertUser'
 import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import { colorThemes } from '../../configs/global-styles'
-import UserContext from '../../context/UserContext'
 import IconButton from '../../CustomComponents/Buttons/IconButton'
 import ConditionalRender from '../../CustomComponents/conditional-render'
 import Input from '../../CustomComponents/Input'
 import useAuthUser from '../../hooks/useAuthUser'
 import useFormHelpers from '../../hooks/useFormHelpers'
+import DateFormatter from '../../library/DateFormatter'
 import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
 import { UserType } from '../../types/UserType'
@@ -52,11 +52,11 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
   } = useFormHelpers<InitialValues>({
     username: user?.username,
     email: user?.email,
-    number: 2145627133,
+    number: user?.number,
   })
 
   useEffect(() => {
-    setInitialValues({ username: user?.username, email: user?.email, number: 2145627133 })
+    setInitialValues({ username: user?.username, email: user?.email, number: user?.number })
   }, [user])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -110,6 +110,18 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
     setIsEditing(newEditing)
   }
 
+  const formatPhoneNumber = (phoneNumber: string | number) => {
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '')
+
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+    }
+
+    return null
+  }
+
   const data = useMemo(
     (): Data[] => [
       {
@@ -135,9 +147,15 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
       {
         title: 'Phone Number',
         inputName: 'number',
-        datum: '(214) 562-7133',
+        datum: formatPhoneNumber(user?.number),
         condition: true,
         canEdit: true,
+      },
+      {
+        title: 'Age',
+        datum: DateFormatter.getAge(user?.date_of_birth),
+        condition: !!user?.date_of_birth,
+        canEdit: false,
       },
       {
         title: 'Chores Pending',

@@ -16,6 +16,7 @@ import useGetUserTransfers from '../api/Transfer/useGetUserTransfers'
 import TransferSummaryCard from '../components/User/transfer-summary-card'
 import useGetUser from '../api/User/useGetUser'
 import UserContext from '../context/UserContext'
+import { TransferType } from '../types/TransferType'
 
 type Props = {
   title: string
@@ -24,7 +25,7 @@ type Props = {
 type Feature = {
   id: number
   title: string
-  items: UserChoresSummaryType | UserTransactionsSummaryType | undefined
+  items: UserChoresSummaryType | UserTransactionsSummaryType | TransferType | undefined
   icon: React.ReactNode
   component?: React.ReactNode
 }
@@ -32,7 +33,6 @@ type Feature = {
 const UserDetailsPage = ({ title }: Props) => {
   const { id } = useParams()
   const { authUser } = useAuthUser()
-  // const [user, setUser] = useState<UserType | null>(null)
   const [userChores, setUserChores] = useState<UserChoreType[] | null>(null)
   const [transfers, setTransfers] = useState(null)
   const [transactions, setTransactions] = useState(null)

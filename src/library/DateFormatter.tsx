@@ -1,5 +1,5 @@
 // @flow
-import { format, parseISO } from 'date-fns'
+import { format, parseISO, differenceInYears, formatISO } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 
 class DateFormatter {
@@ -19,6 +19,14 @@ class DateFormatter {
     let day = parseISO(isoString)
 
     return format(utcToZonedTime(day, 'Europe/London'), 'MMM d, yyyy')
+  }
+
+  formatIso(date: string) {
+    return formatISO(new Date(date))
+  }
+
+  getAge(date: number | Date) {
+    return differenceInYears(new Date(), new Date(date))
   }
 
   humanReadableDateWithSeparator(date: number | string) {

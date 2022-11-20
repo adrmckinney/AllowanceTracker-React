@@ -5,10 +5,10 @@ import { apiUrl } from '../routes'
 
 const useGetUser = () => {
   const { setUserContext } = useContext(UserContext)
-  const getUser = async (token: string, id: number | string): Promise<UserType> => {
+  const getUser = async (api_token: string, id: number | string): Promise<UserType> => {
     const response = await apiUrl.get(`/user/${+id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${api_token}`,
       },
     })
 

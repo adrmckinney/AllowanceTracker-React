@@ -9,9 +9,13 @@ interface TouchedProps {
   name: string
 }
 
+interface TouchedState {
+  [index: string]: boolean | null
+}
+
 const useFormHelpers = <T,>(initialValues: T) => {
-  const [input, setInput] = useState<T>()
-  const [touched, setTouched] = useState({})
+  const [input, setInput] = useState<T>(initialValues)
+  const [touched, setTouched] = useState<TouchedState>(null)
 
   const handleChange = ({ name, value }: ChangeProps) =>
     void setInput(input => ({
@@ -19,16 +23,26 @@ const useFormHelpers = <T,>(initialValues: T) => {
       [name]: value,
     }))
 
-  const handleTouched = ({ name }: TouchedProps) =>
+  const handleOnBlur = ({ name }: TouchedProps) =>
     void setTouched(touched => ({
       ...touched,
       [name]: true,
     }))
 
+  const resetTouchedFields = <T,>(fields: T[]) => {
+    fields?.forEach((field: T) => {
+      void setTouched(touched => ({
+        ...touched,
+        [field['name']]: false,
+      }))
+    })
+  }
+
   return {
     handleChange,
-    handleTouched,
+    handleOnBlur,
     setInput,
+    resetTouchedFields,
     input,
     touched,
   }

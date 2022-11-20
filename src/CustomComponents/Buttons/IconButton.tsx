@@ -1,3 +1,4 @@
+import { isDisabled } from '@testing-library/user-event/dist/utils'
 import { buttonTheme } from '../../configs/global-styles'
 import Icon from '../Icon'
 
@@ -8,6 +9,7 @@ interface Props {
   onClick?: (e: React.FormEvent<HTMLFormElement> | any) => void
   classNames?: string
   customIconStyle?: string
+  isDisabled?: boolean
 }
 
 const IconButton = ({
@@ -17,6 +19,7 @@ const IconButton = ({
   onClick,
   classNames,
   customIconStyle,
+  isDisabled = false,
 }: Props) => {
   return (
     <button
@@ -27,6 +30,7 @@ const IconButton = ({
         buttonTheme.icon,
         classNames,
       ].join(' ')}
+      disabled={isDisabled}
     >
       <Icon icon={icon} size={size} aria-hidden='true' customIconStyle={customIconStyle} />
     </button>
