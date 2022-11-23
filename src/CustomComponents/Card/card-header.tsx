@@ -1,14 +1,11 @@
-// @flow
-import React, { Node } from 'react'
-
 type Props = {
-  title: String,
-  subTitle?: String,
-  rightSideContent?: Node,
-  children?: Node,
+  title: String
+  subTitle?: String
+  rightSideContent?: React.ReactNode
+  children?: React.ReactNode
 }
 
-const CardHeader = ({ title, subTitle, rightSideContent, children }: Props) => {
+const CardHeader = ({ title, subTitle, rightSideContent }: Props) => {
   return (
     <div className='bg-white px-4 py-5 border-b border-gray-200 sm:px-6'>
       <div className='-ml-4 -mt-4 flex justify-between items-center flex-wrap sm:flex-nowrap'>

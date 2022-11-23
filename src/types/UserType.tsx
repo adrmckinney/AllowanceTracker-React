@@ -2,7 +2,7 @@ import { AuthUserType } from './AuthUserType'
 
 export interface UserType extends Omit<AuthUserType, 'api_token'> {
   wallet: number
-  number: number
+  number: string
   date_of_birth: EpochTimeStamp | Date
   chores: UserChoresSummaryType
   transactions: UserTransactionsSummaryType

@@ -4,7 +4,7 @@ import PaddedLayout from './padded-layout'
 type Props = {
   title: string
   overviewSection: React.ReactNode
-  gridSection: React.ReactNode
+  gridSection?: React.ReactNode
 }
 
 const Page = ({ title, overviewSection, gridSection }: Props) => {

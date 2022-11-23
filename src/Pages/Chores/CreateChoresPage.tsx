@@ -2,38 +2,28 @@ import Button from '../../CustomComponents/Buttons/Button'
 import { fontThemes } from '../../configs/global-styles'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from '../../CustomComponents/Input'
-import useRegisterValidation from '../../configs/ValidationRules/useRegisterValidation'
 import useFormHelpers from '../../hooks/useFormHelpers'
-import {
-  ChildRegistrationInputType,
-  RegistrationInputFieldTypes,
-  RegistrationInputType,
-} from '../../types/RegistrationInputType'
 import { useState } from 'react'
-import useUpsertUser from '../../api/User/useUpsertUser'
 import useAuthUser from '../../hooks/useAuthUser'
-import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import ConditionalRender from '../../CustomComponents/conditional-render'
-import RegistrationSummaryCard from '../../components/User/RegistrationSummaryCard'
-import { childRegistrationFields } from '../../helpers/formHelpers/UserRegistrationFormHelpers'
 import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
-import { formatStringPhoneNumber } from '../../helpers/formHelpers/PhoneNumberHelpers'
+import { choreCreationInputFields } from '../../helpers/formHelpers/ChoreFormHelpers'
+import { ChoreCreationInputFieldTypes, ChoreCreationInputType } from '../../types/ChoreInputType'
+import ChoreSummaryCard from '../../components/ChoreSummaryCard'
+import useChoreValidation from '../../configs/ValidationRules/useChoreValidation'
+import useUpsertChore from '../../api/Chore/useUpsertChore'
 
-const ChildRegistrationPage = (): JSX.Element => {
-  const [children, setChildren] = useState<ChildRegistrationInputType[]>([])
-  const [isChildrenSummary, setIsChildrenSummary] = useState(false)
+const CreateChoresPage = (): JSX.Element => {
+  const [chores, setChore] = useState<ChoreCreationInputType[]>([])
+  const [error, setError] = useState(null)
+  const [isChoresSummary, setIsChoresSummary] = useState(false)
   const { authUser } = useAuthUser()
-  const { upsertUser } = useUpsertUser()
-  const initialValues: ChildRegistrationInputType = {
+  const { upsertChore } = useUpsertChore()
+  const initialValues: ChoreCreationInputType = {
     name: '',
-    username: '',
-    email: '',
-    number: undefined,
-    wallet: '',
-    password: '',
-    confirm_password: '',
-    permission: PermissionTypes.child.value,
+    description: '',
+    cost: '',
   }
   const {
     input,
@@ -43,65 +33,63 @@ const ChildRegistrationPage = (): JSX.Element => {
     setInput: setInitialValues,
     resetTouchedFields,
   } = useFormHelpers(initialValues)
-  const { validations, isDisabled, apiErrors, handleApiErrors, setInitialValidationValues } =
-    useRegisterValidation(input, touched)
+  const { validations, isDisabled, setInitialValidationValues } = useChoreValidation(input, touched)
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    children?.forEach((child: ChildRegistrationInputType) => {
-      upsertUser(authUser?.api_token, child).then(data => {
-        navigate(`../family/setup`)
-        console.log('data', data)
+    chores?.forEach((chore: ChoreCreationInputType) => {
+      upsertChore(authUser?.api_token, chore).then(data => {
+        if ('error' in data) {
+          setError(data?.error)
+        } else {
+          navigate(`../family/setup`)
+          console.log('data success', data)
+        }
       })
     })
   }
 
-  const handleStoreChild = () => {
-    setChildren([
-      ...children,
+  const handleStoreChore = () => {
+    setChore([
+      ...chores,
       {
         name: input?.name,
-        username: input?.username,
-        email: input?.email,
-        number: input?.number,
-        wallet: input?.wallet,
-        password: input?.password,
-        confirm_password: input?.confirm_password,
-        permission: PermissionTypes.child.value,
+        description: input?.description,
+        cost: input?.cost,
       },
     ])
     setInitialValues(initialValues)
-    resetTouchedFields(childRegistrationFields)
-    setIsChildrenSummary(true)
+    resetTouchedFields(choreCreationInputFields)
+    setIsChoresSummary(true)
   }
 
-  const handleUpdateStoredChild = (key: string, value: string | number, idx: number) => {
-    let newStoredChildren: ChildRegistrationInputType[] = [...children]
-    const childToUpdate: ChildRegistrationInputType = newStoredChildren[idx]
+  const handleUpdateStoredChore = (key: string, value: string | number, idx: number) => {
+    let newStoredChores: ChoreCreationInputType[] = [...chores]
+    const choreToUpdate: ChoreCreationInputType = newStoredChores[idx]
 
-    let updatedChild: ChildRegistrationInputType = childToUpdate
-    if (key === 'password' && typeof value === 'string') {
-      updatedChild = {
-        ...childToUpdate,
-        [key]: value,
-        confirm_password: value,
-      }
-    } else {
-      updatedChild = {
-        ...childToUpdate,
-        [key]: value,
-      }
+    let updatedChore: ChoreCreationInputType = choreToUpdate
+
+    updatedChore = {
+      ...choreToUpdate,
+      [key]: value,
     }
 
-    newStoredChildren[idx] = updatedChild
-    setChildren(newStoredChildren)
+    newStoredChores[idx] = updatedChore
+    setChore(newStoredChores)
   }
 
-  const handleAddAnotherChild = () => {
+  const handleDeleteStoredChore = (idx: number) => {
+    let choresCopy: ChoreCreationInputType[] = [...chores]
+    choresCopy?.splice(idx, 1)
+
+    setChore(choresCopy)
+  }
+
+  const handleAddAnotherChore = () => {
     setInitialValidationValues()
-    setIsChildrenSummary(false)
-    resetTouchedFields(childRegistrationFields)
+    setIsChoresSummary(false)
+    resetTouchedFields(choreCreationInputFields)
   }
 
   return (
@@ -111,15 +99,15 @@ const ChildRegistrationPage = (): JSX.Element => {
           <div>
             <h1 className={`mt-6 mb-10 text-center ${fontThemes.appTitle}`}>Allowance Tracker</h1>
             <h2 className={`mt-6 text-center ${fontThemes.title}`}>
-              {isChildrenSummary ? 'Children You Have Added' : 'Register You Children'}
+              {isChoresSummary ? 'Chroes you have created' : 'Create a Chore'}
             </h2>
           </div>
           <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
             <ConditionalRender
-              condition={isChildrenSummary}
+              condition={isChoresSummary}
               falseRender={
                 <>
-                  {childRegistrationFields?.map((field: RegistrationInputFieldTypes) => (
+                  {choreCreationInputFields?.map((field: ChoreCreationInputFieldTypes) => (
                     <Input
                       key={field?.name}
                       label={field?.label}
@@ -141,18 +129,20 @@ const ChildRegistrationPage = (): JSX.Element => {
                 </>
               }
             >
-              {children?.map((child: ChildRegistrationInputType, childIdx: number) => (
-                <RegistrationSummaryCard
-                  key={child?.username}
-                  child={child}
-                  handleUpdateStoredChild={handleUpdateStoredChild}
-                  childIdx={childIdx}
+              {chores?.map((chore: ChoreCreationInputType, choreIdx: number) => (
+                <ChoreSummaryCard
+                  key={`${chore?.name}-${choreIdx}`}
+                  chore={chore}
+                  handleUpdateStoredChore={handleUpdateStoredChore}
+                  handleDeleteStoredChore={handleDeleteStoredChore}
+                  choreIdx={choreIdx}
+                  error={error}
                 />
               ))}
             </ConditionalRender>
             <div>
               <ConditionalRender
-                condition={isChildrenSummary}
+                condition={isChoresSummary}
                 falseRender={
                   <Button
                     title='Save'
@@ -161,19 +151,19 @@ const ChildRegistrationPage = (): JSX.Element => {
                       ' '
                     )}
                     disabled={isDisabled}
-                    onClick={handleStoreChild}
+                    onClick={handleStoreChore}
                   />
                 }
               >
                 <Button
-                  title='Add Another Child'
+                  title='Add Another Chore'
                   type='button'
                   customClassName='w-full mt-6'
                   disabled={false}
-                  onClick={handleAddAnotherChild}
+                  onClick={handleAddAnotherChore}
                 />
                 <Button
-                  title='Done Adding Children'
+                  title='Done Adding Chores'
                   type='submit'
                   customClassName='w-full mt-6'
                   disabled={false}
@@ -188,4 +178,4 @@ const ChildRegistrationPage = (): JSX.Element => {
   )
 }
 
-export default ChildRegistrationPage
+export default CreateChoresPage

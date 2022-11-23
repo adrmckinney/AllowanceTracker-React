@@ -5,4 +5,5 @@ export interface AuthUserType {
   username: string
   api_token: string
   permission: number
+  image: string
 }

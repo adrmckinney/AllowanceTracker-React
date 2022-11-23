@@ -39,7 +39,7 @@ const RegistrationPage = (): JSX.Element => {
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
-        navigate(`../register/child`)
+        navigate(`../family/setup`)
       }
     })
   }

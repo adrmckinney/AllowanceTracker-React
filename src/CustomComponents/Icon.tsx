@@ -7,6 +7,7 @@ import {
   ExclamationCircleIcon,
   MagnifyingGlassIcon,
   PencilIcon,
+  ArrowsRightLeftIcon,
 } from '@heroicons/react/24/solid'
 import {
   ArrowPathIcon,
@@ -71,6 +72,7 @@ type Icons = {
   list: React.ReactNode
   exclamation: React.ReactNode
   lockClosed: React.ReactNode
+  transfer: React.ReactNode
 }
 
 const Icon = ({
@@ -202,6 +204,13 @@ const Icon = ({
     ),
     list: (
       <ListBulletIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    transfer: (
+      <ArrowsRightLeftIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overwriteIconStyle}
         aria-hidden='true'

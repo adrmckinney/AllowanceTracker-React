@@ -28,14 +28,14 @@ interface Props {
   rows?: number
   ref?: LegacyRef<HTMLInputElement>
   errors?: Error[]
-  handleOnBlur?: (e: FormChangeType) => boolean
+  handleOnBlur?: (e: FormChangeType) => void
   touched?: { [index: string]: boolean } | null
   iconSize?: string
   iconStatus?: string
   customIconStyle?: string
   overwriteIconStyle?: object
   onChange: (e: FormChangeType) => any
-  onKeyDown?: (e: FormChangeType) => any
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => any
   autoFocus?: boolean
 }
 
@@ -70,6 +70,8 @@ const Input = ({
   onKeyDown,
   autoFocus = false,
 }: Props): JSX.Element => {
+  console.log('errors', errors)
+
   return (
     <>
       <div>

@@ -6,9 +6,10 @@ export const fakeUser: UserType = {
   username: 'olivia_mck',
   email: 'olivia@email.com',
   wallet: 94802,
-  number: 5555555555,
+  number: '(555) 222-1234',
   date_of_birth: new Date(),
   permission: 4,
+  image: '',
   chores: {
     choresCount: 6,
     totalChoresIncome: 1000,

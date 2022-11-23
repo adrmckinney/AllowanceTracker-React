@@ -1,43 +1,48 @@
 import { useState } from 'react'
-import { colorThemes } from '../../configs/global-styles'
-import { ReturnValidationType } from '../../configs/ValidationRules/ValidationTypes/RegistrationTypes'
-import useRegisterValidation from '../../configs/ValidationRules/useRegisterValidation'
-import Button from '../../CustomComponents/Buttons/Button'
-import IconButton from '../../CustomComponents/Buttons/IconButton'
-import ConditionalRender from '../../CustomComponents/conditional-render'
-import Input from '../../CustomComponents/Input'
-import { childRegistrationFields } from '../../helpers/formHelpers/UserRegistrationFormHelpers'
-import useFormHelpers from '../../hooks/useFormHelpers'
-import { FormChangeType } from '../../types/FormChangeType'
-import {
-  ChildRegistrationInputType,
-  RegistrationInputFieldTypes,
-} from '../../types/RegistrationInputType'
+import { colorThemes } from '../configs/global-styles'
+import { ReturnValidationType } from '../configs/ValidationRules/ValidationTypes/RegistrationTypes'
+import useRegisterValidation from '../configs/ValidationRules/useRegisterValidation'
+import Button from '../CustomComponents/Buttons/Button'
+import IconButton from '../CustomComponents/Buttons/IconButton'
+import ConditionalRender from '../CustomComponents/conditional-render'
+import Input from '../CustomComponents/Input'
+import useFormHelpers from '../hooks/useFormHelpers'
+import { FormChangeType } from '../types/FormChangeType'
+import { ChoreCreationInputFieldTypes, ChoreCreationInputType } from '../types/ChoreInputType'
+import { choreCreationInputFields } from '../helpers/formHelpers/ChoreFormHelpers'
+import InputErrorMessage from '../CustomComponents/input-error-message'
 
 type Props = {
-  child: ChildRegistrationInputType
-  handleUpdateStoredChild: (key: string, value: string | number, idx: number) => void
-  childIdx: number
+  chore: ChoreCreationInputType
+  handleUpdateStoredChore: (key: string, value: string | number, idx: number) => void
+  handleDeleteStoredChore: (idx: number) => void
+  choreIdx: number
+  error: ChoreApiError
+}
+
+interface ChoreApiError {
+  message: string
+  status: number
 }
 
 type InitialEditingValues = {
   name: boolean
-  username: boolean
-  email: boolean
-  number: boolean
-  wallet: boolean
-  password: boolean
+  description: boolean
+  cost: boolean
 }
 
-const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: Props) => {
-  const { handleChange, input, touched, handleOnBlur } = useFormHelpers(child)
+const ChoreSummaryCard = ({
+  chore,
+  handleUpdateStoredChore,
+  handleDeleteStoredChore,
+  choreIdx,
+  error,
+}: Props) => {
+  const { handleChange, input, touched, handleOnBlur } = useFormHelpers(chore)
   const initialEditingValues: InitialEditingValues = {
     name: false,
-    username: false,
-    email: false,
-    number: false,
-    wallet: false,
-    password: false,
+    description: false,
+    cost: false,
   }
   const { validations } = useRegisterValidation(input, touched)
   const [isEditing, setIsEditing] = useState(initialEditingValues)
@@ -58,17 +63,15 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
     e: React.KeyboardEvent<HTMLInputElement>,
     key: string,
     value: string | number,
-    childIdx: number
+    choreIdx: number
   ): void => {
     if (e.key === 'Enter') {
-      handleUpdateStoredChild(key, value, childIdx)
+      handleUpdateStoredChore(key, value, choreIdx)
       setIsEditing(initialEditingValues)
     }
   }
 
   const isDisabled = (validations: ReturnValidationType[]): boolean => {
-    console.log('validations', validations)
-
     let activeErrors = 0
     validations?.map((validation: ReturnValidationType) => {
       if (!validation?.valid) activeErrors += 1
@@ -76,17 +79,24 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
 
     return activeErrors > 0
   }
+  console.log('choreIdx', choreIdx)
 
   return (
     <>
-      <div>
-        <h3 className='text-lg font-medium leading-6 text-gray-900'>{child?.name}</h3>
+      <div className='flex justify-between'>
+        <h3 className='text-lg font-medium leading-6 text-gray-900'>{chore?.name}</h3>
+        <div>
+          <IconButton
+            icon='delete'
+            size='lg'
+            customIconStyle={colorThemes?.actionIconTextColor?.danger}
+            onClick={() => handleDeleteStoredChore(choreIdx)}
+          />
+        </div>
       </div>
       <div className='mt-5 border-t border-gray-200'>
         <dl className='divide-y divide-gray-200'>
-          {childRegistrationFields?.slice(0, -1)?.map((field: RegistrationInputFieldTypes) => {
-            console.log('validations?.[field?.name]?.valid', validations?.[field?.name])
-
+          {choreCreationInputFields?.map((field: ChoreCreationInputFieldTypes) => {
             return (
               <div key={field?.name} className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                 <dt className='text-sm font-medium text-gray-500'>{field?.label}</dt>
@@ -96,10 +106,18 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
                     falseRender={
                       <>
                         <span className='flex-grow'>
-                          {field?.name === 'wallet'
-                            ? `$${child?.[field?.name]}`
-                            : child?.[field?.name]}
+                          {field?.name === 'cost'
+                            ? `$${chore?.[field?.name]}`
+                            : chore?.[field?.name]}
+                          <ConditionalRender condition={!!error?.status && field?.name === 'name'}>
+                            <InputErrorMessage
+                              name={field?.name}
+                              theme={field?.type}
+                              errorMessage={error?.message}
+                            />
+                          </ConditionalRender>
                         </span>
+
                         <span className='ml-4 flex-shrink-0'>
                           <Button
                             title='Update'
@@ -115,7 +133,7 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
                       type={field?.type}
                       name={field?.name}
                       value={
-                        field?.name === 'wallet' && input?.[field?.name]?.length === 0
+                        field?.name === 'cost' && input?.[field?.name]?.length === 0
                           ? '0'
                           : input?.[field?.name]
                       }
@@ -123,9 +141,9 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
                       iconSize={field?.iconSize ?? ''}
                       customIconStyle={field?.iconColor ?? ''}
                       placeholder={field?.placeHolder ?? ''}
-                      id={`child-${childIdx}-summary-${field?.name}`}
+                      id={`child-${choreIdx}-summary-${field?.name}`}
                       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                        handleKeyDown(e, field?.name, input?.[field?.name], childIdx)
+                        handleKeyDown(e, field?.name, input?.[field?.name], choreIdx)
                       }
                       onChange={(e: FormChangeType) => handleChange(e?.target)}
                       handleOnBlur={(e: FormChangeType) => handleOnBlur(e.target)}
@@ -149,7 +167,7 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
                           colorThemes.actionIconTextColor.success,
                         ].join(' ')}
                         onClick={() => {
-                          handleUpdateStoredChild(field?.name, input?.[field?.name], childIdx)
+                          handleUpdateStoredChore(field?.name, input?.[field?.name], choreIdx)
                           setIsEditing(initialEditingValues)
                         }}
                         isDisabled={isDisabled(validations?.[field?.name])}
@@ -166,4 +184,4 @@ const RegistrationSummaryCard = ({ child, handleUpdateStoredChild, childIdx }: P
   )
 }
 
-export default RegistrationSummaryCard
+export default ChoreSummaryCard

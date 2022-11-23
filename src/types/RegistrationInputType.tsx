@@ -16,4 +16,8 @@ export type RegistrationInputFieldTypes = {
   name: string
   label: string
   type: string
+  icon?: string
+  iconSize?: string
+  iconColor?: string
+  placeHolder?: string
 }

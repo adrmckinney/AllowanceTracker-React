@@ -1,22 +1,20 @@
 import { useEffect, useState } from 'react'
-import { getUsersList } from '../api/User/getUsersList'
+import useGetUsersList from '../api/User/useGetUsersList'
+import useAuthUser from '../hooks/useAuthUser'
 
 interface Props {
   title: string
 }
 
 const UsersPage = ({ title }: Props): JSX.Element => {
-  // const { authUser } = useUserContext()
-  const tempAuthUser = {
-    api_token: '1ilGJg3RKnICAdH7KGlnN750oYAQGsIPR54YJohuXLyeYxVp7u8MX5axX2zv',
-    id: '1',
-  }
+  const { authUser } = useAuthUser()
+  const { getUsersList } = useGetUsersList()
   const [users, setUsers] = useState(null)
-  console.log('users', users)
+
   useEffect(() => {
-    if (!!tempAuthUser?.api_token) {
+    if (!!authUser?.api_token) {
       //I should get this api_token from local storage instead
-      getUsersList(tempAuthUser?.api_token).then(data => {
+      getUsersList(authUser?.api_token).then(data => {
         if (data?.hasOwnProperty('errorMessage')) {
           // setHTTPCodeMessage(data?.errorMessage)
           // navigate('/error-page')
@@ -27,8 +25,6 @@ const UsersPage = ({ title }: Props): JSX.Element => {
     }
   }, [])
 
-  console.log('tempAuthUser', tempAuthUser)
-  console.log('users', users)
   return (
     <>
       <div>users page</div>

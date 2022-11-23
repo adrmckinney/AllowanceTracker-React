@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import useUpsertUser from '../../api/User/useUpsertUser'
 import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import { colorThemes } from '../../configs/global-styles'
+import useUserSummaryValidation from '../../configs/ValidationRules/useUserSummaryValidation'
+import CancelSubmitIconButtons from '../../CustomComponents/Buttons/CancelSubmitIconButtons'
 import IconButton from '../../CustomComponents/Buttons/IconButton'
 import ConditionalRender from '../../CustomComponents/conditional-render'
 import Input from '../../CustomComponents/Input'
@@ -17,6 +19,7 @@ type Props = {
 }
 
 type EditingState = {
+  name: boolean
   username: boolean
   email: boolean
   number: boolean
@@ -31,13 +34,15 @@ type Data = {
 }
 
 type InitialValues = {
+  name: string
   username: string
   email: string
-  number: number
+  number: string
 }
 
 const UserSummarySection = ({ user }: Props): JSX.Element => {
   const [isEditing, setIsEditing] = useState<EditingState>({
+    name: false,
     username: false,
     email: false,
     number: false,
@@ -49,14 +54,24 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
     handleChange,
     input,
     setInput: setInitialValues,
+    touched,
+    handleOnBlur,
   } = useFormHelpers<InitialValues>({
+    name: user?.name,
     username: user?.username,
     email: user?.email,
     number: user?.number,
   })
 
+  const { validations, isDisabled } = useUserSummaryValidation(input, touched)
+
   useEffect(() => {
-    setInitialValues({ username: user?.username, email: user?.email, number: user?.number })
+    setInitialValues({
+      name: user?.name,
+      username: user?.username,
+      email: user?.email,
+      number: user?.number,
+    })
   }, [user])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -77,24 +92,25 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
   }
 
   const handleIsEditing = (inputName: string) => {
-    const newEditing = { ...isEditing }
+    let newEditing = { ...isEditing }
+    Object.keys(newEditing)?.forEach((field: string) => {
+      newEditing[field] = false
+    })
 
     switch (inputName) {
+      case 'name':
+        newEditing['name'] = true
+        setIsEditing(newEditing)
+        break
       case 'username':
         newEditing['username'] = true
-        newEditing['email'] = false
-        newEditing['number'] = false
         setIsEditing(newEditing)
         break
       case 'email':
-        newEditing['username'] = false
         newEditing['email'] = true
-        newEditing['number'] = false
         setIsEditing(newEditing)
         break
       case 'number':
-        newEditing['username'] = false
-        newEditing['email'] = false
         newEditing['number'] = true
         setIsEditing(newEditing)
         break
@@ -102,25 +118,15 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
   }
 
   const handleCancel = () => {
-    const newEditing = { ...isEditing }
+    let newEditing = { ...isEditing }
 
-    newEditing['username'] = false
-    newEditing['email'] = false
-    newEditing['number'] = false
+    Object.keys(newEditing)?.forEach((field: string) => {
+      newEditing[field] = false
+    })
+
     setIsEditing(newEditing)
   }
-
-  const formatPhoneNumber = (phoneNumber: string | number) => {
-    const cleaned = ('' + phoneNumber).replace(/\D/g, '')
-
-    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-
-    if (match) {
-      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
-    }
-
-    return null
-  }
+  console.log('isEditing', isEditing)
 
   const data = useMemo(
     (): Data[] => [
@@ -147,7 +153,7 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
       {
         title: 'Phone Number',
         inputName: 'number',
-        datum: formatPhoneNumber(user?.number),
+        datum: user?.number,
         condition: true,
         canEdit: true,
       },
@@ -203,21 +209,65 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
         <div className='aspect-w-3 aspect-h-2 h-0 sm:aspect-w-3 sm:aspect-h-4'>
           <img
             className='rounded-lg object-cover shadow-lg'
+            // src={user?.image}
+            // src='https://www.gravatar.com/avatar/963f22f3f1be921e420e6fa8675e4199?d=https%3A%2F%2Fwww.somewhere.com%2Fhomestar.jpg&s=40'
             src='https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80'
             alt={user?.name}
           />
         </div>
-        <div className='sm:col-span-2'>
+        <form onSubmit={handleSubmit} className='sm:col-span-2'>
           <div className='space-y-4'>
             <div className='space-y-1 text-lg font-medium leading-6'>
-              <h2>{user?.name}</h2>
+              <div className='flex'>
+                <ConditionalRender
+                  condition={!isEditing?.name}
+                  falseRender={
+                    <>
+                      <div className='flex items-center'>
+                        <div className='w-1/2'>
+                          <Input
+                            type='text'
+                            name={'name'}
+                            theme='normal'
+                            hiddenLabel
+                            value={input?.name}
+                            onChange={(e: FormChangeType) => handleChange(e?.target)}
+                            handleOnBlur={(e: FormChangeType) => handleOnBlur(e?.target)}
+                            touched={touched}
+                            errors={validations?.name}
+                          />
+                        </div>
+                        <div
+                          className={[
+                            'flex justify-center pl-2',
+                            isDisabled ? 'self-start pt-2' : 'items-center ',
+                          ].join(' ')}
+                        >
+                          <CancelSubmitIconButtons
+                            handleCancel={handleCancel}
+                            isDisabled={isDisabled}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  }
+                >
+                  <h2>{user?.name}</h2>
+                  <IconButton
+                    icon={'edit'}
+                    size={'xs'}
+                    onClick={() => handleIsEditing('name')}
+                    classNames='pl-2'
+                  />
+                </ConditionalRender>
+              </div>
               <ConditionalRender condition={isParentOrHigher(user)}>
                 <p className={colorThemes.primary.iconText}>
                   {PermissionTypes.findByValue(user?.permission)?.displayName}
                 </p>
               </ConditionalRender>
             </div>
-            <form onSubmit={handleSubmit} className='border-t border-gray-200 px-4 py-5 sm:px-6'>
+            <div className='border-t border-gray-200 px-4 py-5 sm:px-6'>
               <dl className='grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2'>
                 {data?.map(datum => (
                   <ConditionalRender key={datum?.title} condition={datum?.condition}>
@@ -236,25 +286,20 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
                                   hiddenLabel
                                   value={input?.[datum?.inputName]}
                                   onChange={(e: FormChangeType) => handleChange(e?.target)}
+                                  handleOnBlur={(e: FormChangeType) => handleOnBlur(e?.target)}
+                                  touched={touched}
+                                  errors={validations?.[datum?.inputName]}
                                 />
                               </div>
-                              <div className='flex items-center justify-center pl-2'>
-                                <IconButton
-                                  icon='xicon'
-                                  size='lg'
-                                  onClick={handleCancel}
-                                  customIconStyle={[colorThemes.actionIconTextColor.danger].join(
-                                    ' '
-                                  )}
-                                />
-                                <IconButton
-                                  icon='check'
-                                  type='submit'
-                                  size='lg'
-                                  customIconStyle={[
-                                    'text-bold',
-                                    colorThemes.actionIconTextColor.success,
-                                  ].join(' ')}
+                              <div
+                                className={[
+                                  'flex justify-center pl-2',
+                                  isDisabled ? 'self-start pt-2' : 'items-center ',
+                                ].join(' ')}
+                              >
+                                <CancelSubmitIconButtons
+                                  handleCancel={handleCancel}
+                                  isDisabled={isDisabled}
                                 />
                               </div>
                             </div>
@@ -277,9 +322,9 @@ const UserSummarySection = ({ user }: Props): JSX.Element => {
                   </ConditionalRender>
                 ))}
               </dl>
-            </form>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </>
   )

@@ -1,23 +1,19 @@
 import { useEffect, useReducer, useState } from 'react'
+import { UserSummaryInputType } from '../../types/UserSummaryInputType'
 import {
-  validateConfirmPassword,
   validateEmail,
-  validatePassword,
   validatePhoneNumber,
 } from '../../helpers/validationHelpers/ValidationHelpers'
-import { RegistrationInputType } from '../../types/RegistrationInputType'
 import {
-  RegistrationValidationType,
-  ReturnValidationTypes,
-  Validation,
-} from './ValidationTypes/RegistrationTypes'
+  ReturnUserSummaryValidationTypes,
+  UserSummaryValidationType,
+} from './ValidationTypes/UserSummaryValidationTypes'
+import { Validation } from './ValidationTypes/GenericValidationTypes'
 
 interface Touched {
   name?: boolean
-  password?: boolean
   email?: boolean
   number?: boolean
-  confirm_password?: boolean
   username?: boolean
 }
 
@@ -37,15 +33,15 @@ type ApiErrorValidation = {
 }[]
 
 type ReturnType = {
-  validations: ReturnValidationTypes
+  validations: ReturnUserSummaryValidationTypes
   isDisabled: boolean
   apiErrors: ApiError
   handleApiErrors: (arg0: string) => void
   setInitialValidationValues: () => void
 }
 
-const useRegisterValidation = (
-  { name, password, confirm_password, username, email, number }: Partial<RegistrationInputType>,
+const useUserSummaryValidation = (
+  { name = '', username, email, number }: Partial<UserSummaryInputType>,
   touched: Touched
 ): ReturnType => {
   const apiErrorInitialValues: ApiError = {
@@ -64,7 +60,7 @@ const useRegisterValidation = (
   }
   const [apiErrors, setApiErrors] = useState(apiErrorInitialValues)
 
-  const reducer = (validations: RegistrationValidationType, action: ReducerActions) => {
+  const reducer = (validations: UserSummaryValidationType, action: ReducerActions) => {
     const setValue = (field: string) => {
       return {
         ...validations,
@@ -89,15 +85,6 @@ const useRegisterValidation = (
       case 'numberExists':
       case 'validNumberLength':
         return setValue('number')
-      case 'passwordExists':
-      case 'validPasswordLength':
-      case 'hasNumber':
-      case 'hasUpperCase':
-      case 'hasLowerCase':
-      case 'hasSpecialCharacter':
-        return setValue('password')
-      case 'passwordMatches':
-        return setValue('confirm_password')
       case 'reset':
         return initialState
       default:
@@ -105,7 +92,7 @@ const useRegisterValidation = (
     }
   }
 
-  const initialState: RegistrationValidationType = {
+  const initialState: UserSummaryValidationType = {
     name: {
       nameExists: {
         valid: true,
@@ -138,39 +125,6 @@ const useRegisterValidation = (
         message: 'Not a valid phone number',
       },
     },
-    password: {
-      passwordExists: {
-        valid: true,
-        message: 'Password is required',
-      },
-      validPasswordLength: {
-        valid: true,
-        message: 'Your password must be at least 8 characters',
-      } as Validation,
-      hasNumber: {
-        valid: true,
-        message: 'Your password must include at least one number',
-      },
-      hasUpperCase: {
-        valid: true,
-        message: 'Your password must include at least one capital letter',
-      },
-      hasLowerCase: {
-        valid: true,
-        message: 'Your password must include at least one lower case letter',
-      },
-      hasSpecialCharacter: {
-        valid: true,
-        message:
-          'Your password must include at least one special character (! @ # $ % ^ & * ( ) _ +)',
-      },
-    },
-    confirm_password: {
-      passwordMatches: {
-        valid: true,
-        message: 'Your passwords must match',
-      },
-    },
   }
 
   const [validations, dispatch] = useReducer(reducer, initialState)
@@ -190,14 +144,10 @@ const useRegisterValidation = (
 
     if (touched?.number) mapValidationObject(validations?.number)
 
-    if (touched?.password) mapValidationObject(validations?.password)
-
-    if (touched?.confirm_password) mapValidationObject(validations?.confirm_password)
-
     if (touched?.username) {
       setApiErrors(apiErrorInitialValues)
     }
-  }, [password, confirm_password, touched, name, username, email, number])
+  }, [touched, name, username, email, number])
 
   const validateFields = (validationKey: string) => {
     switch (validationKey) {
@@ -213,20 +163,6 @@ const useRegisterValidation = (
         return validatePhoneNumber(number)?.numberExists
       case 'validNumberLength':
         return validatePhoneNumber(number)?.validNumberLength
-      case 'passwordExists':
-        return validatePassword(password)?.passwordExists
-      case 'validPasswordLength':
-        return validatePassword(password)?.validPasswordLength
-      case 'hasNumber':
-        return validatePassword(password)?.hasNumber
-      case 'hasUpperCase':
-        return validatePassword(password)?.hasUpperCase
-      case 'hasLowerCase':
-        return validatePassword(password)?.hasLowerCase
-      case 'hasSpecialCharacter':
-        return true // validatePassword(password)?.hasSpecialCharacter
-      case 'passwordMatches':
-        return validateConfirmPassword(password, confirm_password)?.passwordMatches
       default:
         return false
     }
@@ -241,8 +177,6 @@ const useRegisterValidation = (
   const usernameErrorsCount = countErrors(validations?.username)
   const emailErrorsCount = countErrors(validations?.email)
   const numberErrorsCount = countErrors(validations?.number)
-  const passwordErrorsCount = countErrors(validations?.password)
-  const confirmPasswordErrorsCount = countErrors(validations?.confirm_password)
 
   const apiErrorsCount =
     typeof apiErrors !== 'undefined'
@@ -250,21 +184,13 @@ const useRegisterValidation = (
       : 0
 
   const isDisabled =
-    nameErrorsCount +
-      usernameErrorsCount +
-      emailErrorsCount +
-      numberErrorsCount +
-      passwordErrorsCount +
-      confirmPasswordErrorsCount +
-      apiErrorsCount >
+    nameErrorsCount + usernameErrorsCount + emailErrorsCount + numberErrorsCount + apiErrorsCount >
     0
 
   const nameValidations = Object.values(validations?.name)
   const usernameValidations = Object.values(validations?.username)
   const emailValidations = Object.values(validations?.email)
   const numberValidations = Object.values(validations?.number)
-  const passwordValidations = Object.values(validations?.password)
-  const confirmPasswordValidations = Object.values(validations?.confirm_password)
 
   const handleApiErrors = (errorMessage: string) => {
     switch (errorMessage) {
@@ -287,8 +213,6 @@ const useRegisterValidation = (
       username: usernameValidations,
       email: emailValidations,
       number: numberValidations,
-      password: passwordValidations,
-      confirm_password: confirmPasswordValidations,
     },
     isDisabled,
     apiErrors,
@@ -297,4 +221,4 @@ const useRegisterValidation = (
   }
 }
 
-export default useRegisterValidation
+export default useUserSummaryValidation

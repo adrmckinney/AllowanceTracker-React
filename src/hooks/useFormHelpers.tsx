@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatStringPhoneNumber } from '../helpers/formHelpers/PhoneNumberHelpers'
 
 interface ChangeProps {
   name: string
@@ -17,21 +18,28 @@ const useFormHelpers = <T,>(initialValues: T) => {
   const [input, setInput] = useState<T>(initialValues)
   const [touched, setTouched] = useState<TouchedState>(null)
 
-  const handleChange = ({ name, value }: ChangeProps) =>
-    void setInput(input => ({
+  const handleChange = ({ name, value }: ChangeProps): void => {
+    let newValue = value
+    if (name === 'number' && typeof value === 'string') {
+      newValue = formatStringPhoneNumber(value)
+    } else {
+      newValue = value
+    }
+    setInput(input => ({
       ...input,
-      [name]: value,
+      [name]: newValue,
     }))
+  }
 
-  const handleOnBlur = ({ name }: TouchedProps) =>
-    void setTouched(touched => ({
+  const handleOnBlur = ({ name }: TouchedProps): void =>
+    setTouched(touched => ({
       ...touched,
       [name]: true,
     }))
 
-  const resetTouchedFields = <T,>(fields: T[]) => {
+  const resetTouchedFields = <T,>(fields: T[]): void => {
     fields?.forEach((field: T) => {
-      void setTouched(touched => ({
+      setTouched(touched => ({
         ...touched,
         [field['name']]: false,
       }))

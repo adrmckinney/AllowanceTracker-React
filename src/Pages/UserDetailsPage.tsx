@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import Icon from '../CustomComponents/Icon'
 import FeatureCard from '../CustomComponents/Card/feature-card'
@@ -33,45 +33,45 @@ type Feature = {
 const UserDetailsPage = ({ title }: Props) => {
   const { id } = useParams()
   const { authUser } = useAuthUser()
-  const [userChores, setUserChores] = useState<UserChoreType[] | null>(null)
-  const [transfers, setTransfers] = useState(null)
-  const [transactions, setTransactions] = useState(null)
-  const { setters } = useQueryModifiers()
-  const { getUser } = useGetUser()
-  const { getUserChores } = useGetUserChoresList()
-  const { getUserTransfers } = useGetUserTransfers()
-  const { getUserTransactions } = useGetUserTransactions()
-  const { userContext: user, setUserContext } = useContext(UserContext)
-
+  const { modifiers } = useQueryModifiers()
+  const { userContext: user, isLoadingUserContext } = useContext(UserContext)
   const token = authUser?.api_token
-
-  useEffect(() => {
-    if (!!token && typeof id !== 'undefined') {
-      getUser(token, id).then((data: UserType) => {
-        setUserContext(data)
-      })
-
-      getUserChores(token, { modifiers: prepareModifiers('userChoreUserId') }).then(data =>
-        setUserChores(data?.chores)
-      )
-
-      getUserTransfers(token, { modifiers: prepareModifiers('transferUserId') }).then(data =>
-        setTransfers(data?.transfers)
-      )
-
-      getUserTransactions(token, { modifiers: prepareModifiers('transactionUserId') }).then(data =>
-        setTransactions(data?.transactions)
-      )
-    }
-  }, [])
-
-  const prepareModifiers = (filterKey: string) => {
-    return setters.setMultipleModifierOptions({
+  useGetUser(token, id)
+  const { userChores, isLoading: choresLoading } = useGetUserChoresList(token, {
+    modifiers: {
+      ...modifiers,
       resultsPerPage: 5,
-      filterKey: filterKey,
-      filterValue: authUser?.id,
-    })
-  }
+      filters: {
+        ...modifiers?.filters,
+        userChoreUserId: authUser?.id,
+      },
+    },
+  })
+
+  const { userTransfers: transfers, isLoading: transfersLoading } = useGetUserTransfers(token, {
+    modifiers: {
+      ...modifiers,
+      resultsPerPage: 5,
+      filters: {
+        ...modifiers?.filters,
+        transferUserId: authUser?.id,
+      },
+    },
+  })
+
+  const { userTransactions: transactions, isLoading: transactionsLoading } = useGetUserTransactions(
+    token,
+    {
+      modifiers: {
+        ...modifiers,
+        resultsPerPage: 5,
+        filters: {
+          ...modifiers?.filters,
+          transactionUserId: authUser?.id,
+        },
+      },
+    }
+  )
 
   const features = useMemo(
     (): Feature[] => [
@@ -79,21 +79,21 @@ const UserDetailsPage = ({ title }: Props) => {
         id: 1,
         title: 'Chores',
         items: user?.chores,
-        icon: <Icon icon='list' customIconStyle={'text-white mr-0'} />,
+        icon: <Icon icon='list' customIconStyle={'text-white mr-0'} size='xl' />,
         component: <ChoreSummaryCard userChores={userChores} />,
       },
       {
         id: 2,
         title: 'Transfers',
         items: user?.transactions,
-        icon: <Icon icon='money' customIconStyle={'text-white mr-0'} size='xl' />,
+        icon: <Icon icon='transfer' customIconStyle={'text-white mr-0'} size='xl' />,
         component: <TransferSummaryCard transfers={transfers} />,
       },
       {
         id: 3,
         title: 'Transactions',
         items: user?.transactions,
-        icon: <Icon icon='check' customIconStyle={'text-white mr-0'} />,
+        icon: <Icon icon='dollar' customIconStyle={'text-white mr-0'} size='xl' />,
         component: <TransactionSummaryCard transactions={transactions} />,
       },
     ],

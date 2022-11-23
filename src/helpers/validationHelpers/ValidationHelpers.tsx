@@ -10,8 +10,7 @@ export const validateEmail = (email: string) => {
 export const validatePhoneNumber = (number: string) => {
   return {
     numberExists: number?.length > 0,
-    validNumberLength: true,
-    //   typeof number === 'string' ? number?.length === 10 : number?.toString?.length === 10,
+    validNumberLength: number?.length === 14, // 14 is used becuase the extra characters are being counted
   }
 }
 
