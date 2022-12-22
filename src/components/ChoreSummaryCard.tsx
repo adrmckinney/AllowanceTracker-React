@@ -5,12 +5,12 @@ import useRegisterValidation from '../configs/ValidationRules/useRegisterValidat
 import Button from '../CustomComponents/Buttons/Button'
 import IconButton from '../CustomComponents/Buttons/IconButton'
 import ConditionalRender from '../CustomComponents/conditional-render'
-import Input from '../CustomComponents/Input'
+import Input from '../CustomComponents/Inputs/Input'
 import useFormHelpers from '../hooks/useFormHelpers'
 import { FormChangeType } from '../types/FormChangeType'
 import { ChoreCreationInputFieldTypes, ChoreCreationInputType } from '../types/ChoreInputType'
 import { choreCreationInputFields } from '../helpers/formHelpers/ChoreFormHelpers'
-import InputErrorMessage from '../CustomComponents/input-error-message'
+import InputErrorMessage from '../CustomComponents/Inputs/input-error-message'
 
 type Props = {
   chore: ChoreCreationInputType
@@ -79,7 +79,6 @@ const ChoreSummaryCard = ({
 
     return activeErrors > 0
   }
-  console.log('choreIdx', choreIdx)
 
   return (
     <>

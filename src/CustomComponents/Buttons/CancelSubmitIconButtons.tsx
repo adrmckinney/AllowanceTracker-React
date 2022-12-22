@@ -9,19 +9,26 @@ type Props = {
 const CancelSubmitIconButtons = ({ handleCancel, isDisabled }: Props) => {
   return (
     <>
-      <IconButton
-        icon='xicon'
-        size='lg'
-        onClick={handleCancel}
-        customIconStyle={[colorThemes.actionIconTextColor.danger].join(' ')}
-      />
-      <IconButton
-        icon='check'
-        type='submit'
-        size='lg'
-        customIconStyle={['text-bold', colorThemes.actionIconTextColor.success].join(' ')}
-        isDisabled={isDisabled}
-      />
+      <div
+        className={[
+          'flex justify-center pl-2',
+          isDisabled ? 'self-start pt-2' : 'items-center ',
+        ].join(' ')}
+      >
+        <IconButton
+          icon='xicon'
+          size='lg'
+          onClick={handleCancel}
+          customIconStyle={[colorThemes.actionIconTextColor.danger].join(' ')}
+        />
+        <IconButton
+          icon='check'
+          type='submit'
+          size='lg'
+          customIconStyle={['text-bold', colorThemes.actionIconTextColor.success].join(' ')}
+          isDisabled={isDisabled}
+        />
+      </div>
     </>
   )
 }

@@ -6,6 +6,8 @@ export type ColorThemes = {
   navLink: NavLinkColorTheme
   badge: BadgeColorTheme
   actionIconTextColor: ActionColorTheme
+  skeleton: { textHeavy: string; textLight: string; divideLine: string; border: string }
+  checkbox: { text: string; focusRing: string; border: string }
 }
 
 export type SizeThemes = {
@@ -87,6 +89,7 @@ export type ButtonTheme = {
 export type FontThemes = {
   appTitle: string
   title: string
+  subTitle: string
   default: string
   link: string
   inputLabel: string

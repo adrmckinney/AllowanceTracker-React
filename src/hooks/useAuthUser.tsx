@@ -8,7 +8,19 @@ type useAuthUserReturn = {
   isParent: (user: UserType | AuthUserType) => boolean
   isAdmin: (user: UserType | AuthUserType) => boolean
   isParentOrHigher: (user: UserType | AuthUserType) => boolean
+  isCurrentUser: (currentUser: AuthUserType, otherUser: UserType | AuthUserType) => boolean
+  setAuthLocalStorage: (user: AuthUserType) => void
+  updateAuthLocalStorage: (target: updateLocalTargetType, value: string | number) => void
 }
+
+type updateLocalTargetType =
+  | 'familyId'
+  | 'username'
+  | 'name'
+  | 'email'
+  | 'thumbnail'
+  | 'permission'
+  | ''
 
 const useAuthUser = (): useAuthUserReturn => {
   const authUser = JSON.parse(localStorage.getItem('authUser'))
@@ -22,6 +34,26 @@ const useAuthUser = (): useAuthUserReturn => {
   const isParentOrHigher = (user: UserType | AuthUserType) =>
     user?.permission === PermissionTypes.parent.value ||
     user?.permission === PermissionTypes.admin.value
+  const isCurrentUser = (currentUser: AuthUserType, otherUser: UserType | AuthUserType) =>
+    currentUser?.id === otherUser?.id
+
+  const setAuthLocalStorage = (user: AuthUserType): void => {
+    localStorage.setItem('authUser', JSON.stringify(user))
+  }
+
+  const updateAuthLocalStorage = (
+    target: updateLocalTargetType = '',
+    value: string | number
+  ): void => {
+    const currentStorageAuth = JSON.parse(localStorage.getItem('authUser'))
+    const newAuth = { ...currentStorageAuth }
+
+    switch (target) {
+      case 'familyId':
+        newAuth['family_id'] = value
+        localStorage.setItem('authUser', JSON.stringify(newAuth))
+    }
+  }
 
   return {
     authUser,
@@ -29,6 +61,9 @@ const useAuthUser = (): useAuthUserReturn => {
     isParent,
     isAdmin,
     isParentOrHigher,
+    isCurrentUser,
+    setAuthLocalStorage,
+    updateAuthLocalStorage,
   }
 }
 

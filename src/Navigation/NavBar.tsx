@@ -9,6 +9,7 @@ import DefaultTransition from '../CustomComponents/DefaultTransition'
 import ProfileImage from './profile-image'
 import { logoutUser } from '../api/logoutUser'
 import useAuthUser from '../hooks/useAuthUser'
+import ConditionalRender from '../CustomComponents/conditional-render'
 
 type NavLinks = {
   title: string
@@ -25,11 +26,11 @@ type ProfileLinks = {
 
 const NavBar = (): JSX.Element => {
   const navigate = useNavigate()
-  const { authUser } = useAuthUser()
-  const isLoggedIn = true
+  const { authUser, isParentOrHigher, isChild } = useAuthUser()
+  const isLoggedIn = !!localStorage?.getItem('authUser')
 
   const handleLogout = () => {
-    logoutUser(authUser?.api_token).then(data => {
+    logoutUser(authUser?.api_token).then((data) => {
       if (data?.hasOwnProperty('errorMessage')) {
         // setHttpError(data?.errorMessage)
         navigate('/error-page')
@@ -59,7 +60,17 @@ const NavBar = (): JSX.Element => {
     {
       title: 'Chores',
       path: '/chores',
-      condition: isLoggedIn,
+      condition: isLoggedIn && isChild(authUser),
+    },
+    {
+      title: 'Manage Family',
+      path: '/family/manage',
+      condition: isLoggedIn && isParentOrHigher(authUser),
+    },
+    {
+      title: 'Manage Chores',
+      path: '/chores/manage',
+      condition: isLoggedIn && isParentOrHigher(authUser),
     },
   ]
 
@@ -80,8 +91,8 @@ const NavBar = (): JSX.Element => {
       condition: isLoggedIn, // if kid
     },
     {
-      title: 'Settings',
-      path: '/settings',
+      title: 'Family Settings',
+      path: '/manage-family',
       condition: isLoggedIn,
     },
     {
@@ -107,20 +118,21 @@ const NavBar = (): JSX.Element => {
               <div className='flex justify-between h-16 lg:border-b lg:border-sky-800'>
                 <div className='flex px-2 lg:px-0'>
                   <div className='hidden lg:ml-6 lg:flex lg:space-x-8'>
-                    {navLinks?.map(link => (
-                      <Link
-                        key={link?.title}
-                        to={link?.path}
-                        className={[
-                          'border-transparent',
-                          colorThemes.primary.navLinkText,
-                          colorThemes.primary.hoverNavLinkText,
-                          'hover:border-gray-300 ',
-                          'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
-                        ].join(' ')}
-                      >
-                        {link?.title}
-                      </Link>
+                    {navLinks?.map((link) => (
+                      <ConditionalRender key={link?.title} condition={link?.condition}>
+                        <Link
+                          to={link?.path}
+                          className={[
+                            'border-transparent',
+                            colorThemes.primary.navLinkText,
+                            colorThemes.primary.hoverNavLinkText,
+                            'hover:border-gray-300 ',
+                            'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
+                          ].join(' ')}
+                        >
+                          {link?.title}
+                        </Link>
+                      </ConditionalRender>
                     ))}
                   </div>
                 </div>
@@ -143,7 +155,7 @@ const NavBar = (): JSX.Element => {
                     </div>
                     <DefaultTransition>
                       <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 h-36 overflow-scroll'>
-                        {profileLinks?.map(link => (
+                        {profileLinks?.map((link) => (
                           <Menu.Item key={link?.title}>
                             {({ active }) => (
                               <Link
@@ -168,7 +180,7 @@ const NavBar = (): JSX.Element => {
 
             <Disclosure.Panel className='lg:hidden'>
               <div className='pt-2 pb-3 space-y-1'>
-                {navLinks?.map(link => (
+                {navLinks?.map((link) => (
                   <Disclosure.Button
                     key={link?.title}
                     as={Link}
@@ -191,7 +203,7 @@ const NavBar = (): JSX.Element => {
                   <NotificationIconButton />
                 </div>
                 <div className='mt-3 space-y-1'>
-                  {profileLinks.map(link => (
+                  {profileLinks.map((link) => (
                     <Disclosure.Button
                       key={link.title}
                       as={Link}

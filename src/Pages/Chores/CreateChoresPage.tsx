@@ -1,12 +1,11 @@
 import Button from '../../CustomComponents/Buttons/Button'
 import { fontThemes } from '../../configs/global-styles'
-import { Link, useNavigate } from 'react-router-dom'
-import Input from '../../CustomComponents/Input'
+import { useNavigate } from 'react-router-dom'
+import Input from '../../CustomComponents/Inputs/Input'
 import useFormHelpers from '../../hooks/useFormHelpers'
 import { useState } from 'react'
 import useAuthUser from '../../hooks/useAuthUser'
 import ConditionalRender from '../../CustomComponents/conditional-render'
-import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
 import { choreCreationInputFields } from '../../helpers/formHelpers/ChoreFormHelpers'
 import { ChoreCreationInputFieldTypes, ChoreCreationInputType } from '../../types/ChoreInputType'
@@ -39,12 +38,11 @@ const CreateChoresPage = (): JSX.Element => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     chores?.forEach((chore: ChoreCreationInputType) => {
-      upsertChore(authUser?.api_token, chore).then(data => {
+      upsertChore(authUser?.api_token, chore).then((data) => {
         if ('error' in data) {
           setError(data?.error)
         } else {
-          navigate(`../family/setup`)
-          console.log('data success', data)
+          navigate(-1)
         }
       })
     })
@@ -97,10 +95,9 @@ const CreateChoresPage = (): JSX.Element => {
       <div className='min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
         <div className='max-w-md w-full space-y-8'>
           <div>
-            <h1 className={`mt-6 mb-10 text-center ${fontThemes.appTitle}`}>Allowance Tracker</h1>
-            <h2 className={`mt-6 text-center ${fontThemes.title}`}>
+            <h1 className={`mt-6 text-center ${fontThemes.title}`}>
               {isChoresSummary ? 'Chroes you have created' : 'Create a Chore'}
-            </h2>
+            </h1>
           </div>
           <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
             <ConditionalRender

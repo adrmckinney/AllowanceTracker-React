@@ -33,3 +33,12 @@ interface Rejector {
   id: number
   name: string
 }
+
+export type UpsertUserChoreInputType = {
+  id?: number
+  user_id: number
+  chore_id: number
+  chore_name: string
+  amount: number
+  chore_status: number
+}

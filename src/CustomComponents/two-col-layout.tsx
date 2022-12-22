@@ -1,5 +1,3 @@
-import HorizontalLayout from './horizontal-layout'
-
 type Props = {
   leftColContent: React.ReactNode
   rightColContent: React.ReactNode
@@ -23,7 +21,7 @@ const TwoColLayout = ({
 }: Props) => {
   return (
     <>
-      <HorizontalLayout classNames={`overflow-hidden ${wrapperClassNames}`} flex={{ mbl: 'flex' }}>
+      <div className='flex flex-1 overflow-hidden'>
         {/* Left Section */}
         <section
           aria-labelledby='left-section'
@@ -47,7 +45,7 @@ const TwoColLayout = ({
           </p>
           {rightColContent}
         </section>
-      </HorizontalLayout>
+      </div>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import usePreventDecimalTyping from '../../hooks/usePreventDecimalTyping'
 import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
-import Input from '../Input'
+import Input from './Input'
 
 type Props = {
   label: string

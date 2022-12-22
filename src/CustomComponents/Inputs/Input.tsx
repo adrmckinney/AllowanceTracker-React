@@ -1,11 +1,11 @@
 import { LegacyRef } from 'react'
-import ConditionalRender from './conditional-render'
-import HorizontalLayout from './horizontal-layout'
-import { fontThemes, inputThemes } from '../configs/global-styles'
+import ConditionalRender from '../conditional-render'
+import HorizontalLayout from '../horizontal-layout'
+import { fontThemes, inputThemes } from '../../configs/global-styles'
 import InputErrorMessage from './input-error-message'
-import Icon from './Icon'
-import { Error } from '../types/ErrorType'
-import { FormChangeType } from '../types/FormChangeType'
+import Icon from '../Icon'
+import { Error } from '../../types/ErrorType'
+import { FormChangeType } from '../../types/FormChangeType'
 
 interface Props {
   fieldValidationIcon?: boolean
@@ -28,6 +28,7 @@ interface Props {
   rows?: number
   ref?: LegacyRef<HTMLInputElement>
   errors?: Error[]
+  apiErrors?: Error[]
   handleOnBlur?: (e: FormChangeType) => void
   touched?: { [index: string]: boolean } | null
   iconSize?: string
@@ -60,6 +61,7 @@ const Input = ({
   rows = 4,
   ref,
   errors,
+  apiErrors,
   handleOnBlur,
   touched,
   iconSize,
@@ -70,8 +72,6 @@ const Input = ({
   onKeyDown,
   autoFocus = false,
 }: Props): JSX.Element => {
-  console.log('errors', errors)
-
   return (
     <>
       <div>
@@ -137,6 +137,14 @@ const Input = ({
         </div>
         {errors?.map((error: Error) => (
           <ConditionalRender key={error?.message} condition={!error?.valid && !!touched?.[name]}>
+            <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
+          </ConditionalRender>
+        ))}
+        {apiErrors?.map((error: Error, idx: number) => (
+          <ConditionalRender
+            key={`${error?.message}-${idx}`}
+            condition={!error?.valid && !touched?.[name]}
+          >
             <InputErrorMessage name={name} theme={theme} errorMessage={error?.message} />
           </ConditionalRender>
         ))}

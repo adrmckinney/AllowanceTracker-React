@@ -1,8 +1,14 @@
+import { useContext } from 'react'
+import UserContext from '../context/UserContext'
+import useAuthUser from '../hooks/useAuthUser'
+
 interface Props {
   imageSize?: string
 }
 
 const ProfileImage = ({ imageSize = 'md' }: Props) => {
+  const { userContext: user } = useContext(UserContext)
+  const { authUser } = useAuthUser()
   const size = {
     sm: 'h-6 w-6',
     md: 'h-8 w-8',
@@ -12,8 +18,8 @@ const ProfileImage = ({ imageSize = 'md' }: Props) => {
     <>
       <img
         className={`${size[imageSize as keyof typeof size]} rounded-full`}
-        src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-        alt=''
+        src={authUser?.thumbnail}
+        alt={authUser?.name}
       />
     </>
   )

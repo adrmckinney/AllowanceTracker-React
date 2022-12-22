@@ -62,6 +62,17 @@ export const colorThemes: ColorThemes = {
     warning: 'text-yellow-800 hover:text-yellow-700',
     danger: 'text-red-800 hover:text-red-700',
   },
+  skeleton: {
+    textHeavy: 'bg-gray-300',
+    textLight: 'bg-gray-200',
+    divideLine: 'divide-gray-200',
+    border: 'border-gray-200',
+  },
+  checkbox: {
+    text: 'text-sky-600',
+    focusRing: 'focus:ring-sky-500',
+    border: 'border-gray-300',
+  },
 }
 
 export const sizeThemes: SizeThemes = {
@@ -74,6 +85,7 @@ export const sizeThemes: SizeThemes = {
 export const fontThemes: FontThemes = {
   appTitle: 'text-4xl font-extrabold text-sky-600 tracking-wider',
   title: 'text-3xl font-extrabold text-gray-900 tracking-wide',
+  subTitle: 'text-2xl font-extrabold text-gray-600 tracking-wide',
   default: 'text-sm text-gray-600 tracking-normal',
   link: 'text-sm',
   inputLabel: 'text-sm font-medium text-gray-700',

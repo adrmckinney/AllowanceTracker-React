@@ -1,8 +1,7 @@
 import Button from '../../CustomComponents/Buttons/Button'
 import { fontThemes } from '../../configs/global-styles'
 import { Link, useNavigate } from 'react-router-dom'
-import Input from '../../CustomComponents/Input'
-
+import Input from '../../CustomComponents/Inputs/Input'
 import { useRegister as register } from '../../api/useRegister'
 import useRegisterValidation from '../../configs/ValidationRules/useRegisterValidation'
 import useFormHelpers from '../../hooks/useFormHelpers'
@@ -12,7 +11,7 @@ import {
 } from '../../types/RegistrationInputType'
 import { parentRegistrationFields } from '../../helpers/formHelpers/UserRegistrationFormHelpers'
 import { FormChangeType } from '../../types/FormChangeType'
-import { formatStringPhoneNumber } from '../../helpers/formHelpers/PhoneNumberHelpers'
+import useAuthUser from '../../hooks/useAuthUser'
 
 const RegistrationPage = (): JSX.Element => {
   const initialValues: RegistrationInputType = {
@@ -23,30 +22,28 @@ const RegistrationPage = (): JSX.Element => {
     password: '',
     confirm_password: '',
   }
+  const { setAuthLocalStorage } = useAuthUser()
   const { input, handleChange, handleOnBlur, touched, resetTouchedFields } =
     useFormHelpers(initialValues)
   const { validations, isDisabled, apiErrors, handleApiErrors } = useRegisterValidation(
     input,
     touched
   )
+
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    register(input).then(data => {
+
+    register(input).then((data) => {
       if (data?.hasOwnProperty('errorMessage')) {
         resetTouchedFields(parentRegistrationFields)
         handleApiErrors(data?.errorMessage)
       } else {
-        localStorage.setItem('authUser', JSON.stringify(data))
-        navigate(`../family/setup`)
+        setAuthLocalStorage(data)
+        navigate(`../manage-family`)
       }
     })
-  }
-
-  const formatPhoneNumber = ({ name, value }): void => {
-    const formattedNumber = formatStringPhoneNumber(value)
-    handleChange({ name: name, value: formattedNumber })
   }
 
   return (
@@ -72,12 +69,11 @@ const RegistrationPage = (): JSX.Element => {
                 theme='normal'
                 required
                 value={input?.[field?.name]}
-                onChange={(e: FormChangeType) => {
-                  field?.name === 'number' ? formatPhoneNumber(e?.target) : handleChange(e?.target)
-                }}
+                onChange={(e: FormChangeType) => handleChange(e?.target)}
                 touched={touched}
                 handleOnBlur={(e: FormChangeType) => handleOnBlur(e.target)}
                 errors={validations?.[field?.name]}
+                apiErrors={apiErrors?.[field?.name]}
               />
             ))}
             <div>

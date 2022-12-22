@@ -1,3 +1,5 @@
+import { Receiver, Sender } from './TransferType'
+
 export interface TransactionType {
   id: number
   transfer: Transfer
@@ -15,14 +17,8 @@ interface User {
 
 interface Transfer {
   id: number | null
-  sender: {
-    id: number | null
-    name: string | null
-  }
-  receiver: {
-    id: number | null
-    name: string | null
-  }
+  sender: Sender
+  receiver: Receiver
 }
 
 interface UserChore {

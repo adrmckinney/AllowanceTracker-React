@@ -18,7 +18,7 @@ export default ConfigTools({
   },
   rejected: {
     value: 4,
-    name: 'Reject',
+    name: 'Rejected',
     statusColorTheme: 'danger',
   },
 })

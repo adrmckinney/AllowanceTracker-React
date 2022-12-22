@@ -51,13 +51,13 @@ const useRegisterValidation = (
   const apiErrorInitialValues: ApiError = {
     username: [
       {
-        valid: false,
+        valid: true,
         message: '',
       },
     ],
     default: [
       {
-        valid: false,
+        valid: true,
         message: '',
       },
     ],
@@ -246,7 +246,7 @@ const useRegisterValidation = (
 
   const apiErrorsCount =
     typeof apiErrors !== 'undefined'
-      ? apiErrors?.username?.filter((validation: Validation) => validation.valid)?.length
+      ? apiErrors?.username?.filter((validation: Validation) => !validation.valid)?.length
       : 0
 
   const isDisabled =
@@ -269,10 +269,10 @@ const useRegisterValidation = (
   const handleApiErrors = (errorMessage: string) => {
     switch (errorMessage) {
       case 'Username already exists':
-        setApiErrors({ username: [{ message: 'Username already exists', valid: true }] })
+        setApiErrors({ username: [{ message: 'Username already exists', valid: false }] })
         break
       default:
-        setApiErrors({ default: [{ message: errorMessage, valid: true }] })
+        setApiErrors({ default: [{ message: errorMessage, valid: false }] })
         break
     }
   }

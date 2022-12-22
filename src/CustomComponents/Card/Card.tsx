@@ -1,6 +1,6 @@
 type Props = {
-  header: React.ReactNode
-  body: React.ReactNode
+  header?: React.ReactNode
+  body?: React.ReactNode
 }
 
 const Card = ({ header, body }: Props) => {

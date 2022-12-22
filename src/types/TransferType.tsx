@@ -13,13 +13,13 @@ export interface TransferType {
   created_at: EpochTimeStamp
 }
 
-interface Sender {
+export interface Sender {
   id: number
   name: string
   wallet: number
 }
 
-interface Receiver {
+export interface Receiver {
   id: number
   name: string
   wallet: number

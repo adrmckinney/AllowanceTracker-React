@@ -1,13 +1,12 @@
 import Button from '../../CustomComponents/Buttons/Button'
 import { fontThemes } from '../../configs/global-styles'
-import { Link, useNavigate } from 'react-router-dom'
-import Input from '../../CustomComponents/Input'
+import { useNavigate } from 'react-router-dom'
+import Input from '../../CustomComponents/Inputs/Input'
 import useRegisterValidation from '../../configs/ValidationRules/useRegisterValidation'
 import useFormHelpers from '../../hooks/useFormHelpers'
 import {
   ChildRegistrationInputType,
   RegistrationInputFieldTypes,
-  RegistrationInputType,
 } from '../../types/RegistrationInputType'
 import { useState } from 'react'
 import useUpsertUser from '../../api/User/useUpsertUser'
@@ -16,9 +15,7 @@ import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import ConditionalRender from '../../CustomComponents/conditional-render'
 import RegistrationSummaryCard from '../../components/User/RegistrationSummaryCard'
 import { childRegistrationFields } from '../../helpers/formHelpers/UserRegistrationFormHelpers'
-import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
-import { formatStringPhoneNumber } from '../../helpers/formHelpers/PhoneNumberHelpers'
 
 const ChildRegistrationPage = (): JSX.Element => {
   const [children, setChildren] = useState<ChildRegistrationInputType[]>([])
@@ -50,9 +47,8 @@ const ChildRegistrationPage = (): JSX.Element => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     children?.forEach((child: ChildRegistrationInputType) => {
-      upsertUser(authUser?.api_token, child).then(data => {
-        navigate(`../family/setup`)
-        console.log('data', data)
+      upsertUser(authUser?.api_token, child).then((data) => {
+        navigate(-1)
       })
     })
   }
@@ -109,10 +105,9 @@ const ChildRegistrationPage = (): JSX.Element => {
       <div className='min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
         <div className='max-w-md w-full space-y-8'>
           <div>
-            <h1 className={`mt-6 mb-10 text-center ${fontThemes.appTitle}`}>Allowance Tracker</h1>
-            <h2 className={`mt-6 text-center ${fontThemes.title}`}>
-              {isChildrenSummary ? 'Children You Have Added' : 'Register You Children'}
-            </h2>
+            <h1 className={`mt-6 text-center ${fontThemes.title}`}>
+              {isChildrenSummary ? 'Children You Have Added' : 'Register A Child'}
+            </h1>
           </div>
           <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
             <ConditionalRender

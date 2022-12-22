@@ -29,3 +29,7 @@ export const convertNumberTypePhoneNumberToFormattedStringType = (phoneNumber: n
 
   return null
 }
+
+export const convertStringPhoneNumberToIntNumber = (phoneNumber: string) => {
+  return parseInt(phoneNumber.replace(/[^0-9]/g, ''), 10)
+}

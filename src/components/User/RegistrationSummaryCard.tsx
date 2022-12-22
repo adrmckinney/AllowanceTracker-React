@@ -5,7 +5,7 @@ import useRegisterValidation from '../../configs/ValidationRules/useRegisterVali
 import Button from '../../CustomComponents/Buttons/Button'
 import IconButton from '../../CustomComponents/Buttons/IconButton'
 import ConditionalRender from '../../CustomComponents/conditional-render'
-import Input from '../../CustomComponents/Input'
+import Input from '../../CustomComponents/Inputs/Input'
 import { childRegistrationFields } from '../../helpers/formHelpers/UserRegistrationFormHelpers'
 import useFormHelpers from '../../hooks/useFormHelpers'
 import { FormChangeType } from '../../types/FormChangeType'

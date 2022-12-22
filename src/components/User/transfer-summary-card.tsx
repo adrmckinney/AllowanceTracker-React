@@ -3,16 +3,18 @@ import MoneyFormatter from '../../library/MoneyFormatter'
 import TwoColLayout from '../../CustomComponents/two-col-layout'
 import TransactionDirections from '../../configs/Enums/TransactionDirections'
 import { TransferType } from '../../types/TransferType'
-import useAuthUser from '../../hooks/useAuthUser'
 import TransferStatuses from '../../configs/Enums/TransferStatuses'
 import StatusBadge from '../../CustomComponents/Badges/StatusBadge'
+import { useContext } from 'react'
+import UserContext from '../../context/UserContext'
+import { getSenderOrReceiver, isTransferSender } from '../../helpers/DirectionHelpers'
 
 type Props = {
   transfers: TransferType[]
 }
 
 const TransferSummaryCard = ({ transfers }: Props) => {
-  const { authUser } = useAuthUser()
+  const { userContext: user } = useContext(UserContext)
 
   const selectMostRecentDate = (transfer: TransferType) => {
     const approved = transfer?.transfer_status === TransferStatuses.approved.value
@@ -34,9 +36,7 @@ const TransferSummaryCard = ({ transfers }: Props) => {
   return (
     <>
       {transfers?.map((transfer: TransferType) => {
-        // const isWithdraw = transfer?.direction === TransactionDirections.credit.value
-        const isSender = authUser?.id === transfer?.sender?.id
-
+        const isSender = isTransferSender(user?.id, transfer)
         return (
           <div key={transfer?.id} className='grid grid-cols-1 gap-4'>
             <div className='relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400'>
@@ -44,13 +44,13 @@ const TransferSummaryCard = ({ transfers }: Props) => {
                 leftColContent={
                   <>
                     <p className='text-sm font-medium text-gray-900'>
-                      {isSender ? 'To' : 'From'} {transfer?.receiver?.name?.split(' ')[0]}
+                      {getSenderOrReceiver(isSender, transfer)}
                     </p>
                     <p
                       className={[
                         isSender
-                          ? TransactionDirections.credit.color
-                          : TransactionDirections.debit.color,
+                          ? TransactionDirections.debit.color
+                          : TransactionDirections.credit.color,
                         'text-sm font-medium',
                       ].join(' ')}
                     >
@@ -60,9 +60,11 @@ const TransferSummaryCard = ({ transfers }: Props) => {
                 }
                 rightColContent={
                   <>
-                    <p className='text-sm font-medium text-gray-900'>
+                    <p className='text-sm font-medium text-gray-900 text-right'>
                       <StatusBadge
-                        title={TransferStatuses.findByValue(transfer?.transfer_status)?.name}
+                        title={
+                          TransferStatuses.findByValue(transfer?.transfer_status)?.abbreviatedName
+                        }
                         colorStatus={
                           TransferStatuses.findByValue(transfer?.transfer_status)?.colorStatus
                         }

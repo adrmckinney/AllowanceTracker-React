@@ -4,14 +4,14 @@ import Icon from '../Icon'
 
 interface Props {
   as?: any
-  type?: string
+  type?: 'button' | 'submit' | 'reset'
   title: string
   size?: string
   status?: string
   disabled?: boolean
   icon?: string
   iconStatus?: string
-  onClick?: () => void
+  onClick?: (arg0: any) => void
   to?: string
   customClassName?: string
   overwriteButtonStyle?: object
@@ -21,8 +21,8 @@ interface Props {
   labelPosition?: string
   children?: React.ReactNode
   ariaControls?: string
-  ariaHaspopup?: string
-  ariaExpanded?: string
+  ariaHaspopup?: boolean | 'false' | 'true'
+  ariaExpanded?: boolean | 'false' | 'true'
   srOnly?: string
   ref?: object
   onKeyPress?: () => {}
@@ -91,7 +91,7 @@ const Button = ({
           <Icon
             icon={icon}
             size={size}
-            iconStatus={status}
+            iconStatus={iconStatus}
             customIconStyle={customIconStyle}
             overwriteIconStyle={overwriteIconStyle}
           />
@@ -101,7 +101,7 @@ const Button = ({
           <Icon
             icon={icon}
             size={size}
-            iconStatus={status}
+            iconStatus={iconStatus}
             customIconStyle={customIconStyle}
             overwriteIconStyle={overwriteIconStyle}
           />

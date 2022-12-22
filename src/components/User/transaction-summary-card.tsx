@@ -4,6 +4,7 @@ import TwoColLayout from '../../CustomComponents/two-col-layout'
 import { TransactionType } from '../../types/TransactionType'
 import TransactionDirections from '../../configs/Enums/TransactionDirections'
 import ConditionalRender from '../../CustomComponents/conditional-render'
+import { getSenderOrReceiver, isTransferSender } from '../../helpers/DirectionHelpers'
 
 type Props = {
   transactions: TransactionType[]
@@ -13,7 +14,7 @@ const TransactionSummaryCard = ({ transactions }: Props) => {
   return (
     <>
       {transactions?.map((transaction: TransactionType) => {
-        const isWithdraw = transaction?.direction === TransactionDirections.credit.value
+        const isWithdraw = transaction?.direction === TransactionDirections.debit.value
         const isTransfer = transaction?.transfer?.id !== null
 
         return (
@@ -27,11 +28,11 @@ const TransactionSummaryCard = ({ transactions }: Props) => {
                       falseRender={
                         <>
                           <p className='text-sm font-medium text-gray-900'>
-                            {TransactionDirections.debit.displayName}
+                            {TransactionDirections.credit.displayName}
                           </p>
                           <p
                             className={[
-                              TransactionDirections.debit.color,
+                              TransactionDirections.credit.color,
                               'text-sm font-medium',
                             ].join(' ')}
                           >
@@ -46,8 +47,8 @@ const TransactionSummaryCard = ({ transactions }: Props) => {
                       <p
                         className={[
                           isWithdraw
-                            ? TransactionDirections.credit.color
-                            : TransactionDirections.debit.color,
+                            ? TransactionDirections.debit.color
+                            : TransactionDirections.credit.color,
                           'text-sm font-medium',
                         ].join(' ')}
                       >
@@ -61,13 +62,17 @@ const TransactionSummaryCard = ({ transactions }: Props) => {
                     <ConditionalRender
                       condition={isTransfer}
                       falseRender={
-                        <p className='text-sm font-medium text-gray-900'>
+                        <p className='text-sm font-medium text-gray-900 text-right'>
                           Chore: {transaction?.user_chore?.chore?.name}
                         </p>
                       }
                     >
                       <p className='text-sm font-medium text-gray-900'>
-                        {isWithdraw ? 'To:' : 'From:'} {transaction?.user?.name?.split(' ')[0]}
+                        {/* {isWithdraw ? 'To:' : 'From:'} {transaction?.user?.name?.split(' ')[0]} */}
+                        {getSenderOrReceiver(
+                          isTransferSender(transaction?.user?.id, transaction?.transfer),
+                          transaction?.transfer
+                        )}
                       </p>
                     </ConditionalRender>
                     <p className='truncate text-sm text-gray-500'>
