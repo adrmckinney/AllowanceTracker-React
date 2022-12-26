@@ -19,7 +19,8 @@ const LoginPage = (): JSX.Element => {
     password: '',
   }
 
-  const { input, handleChange, handleOnBlur, touched } = useFormHelpers(initialValues)
+  const { input, handleChange, handleOnBlur, touched, resetTouchedFields } =
+    useFormHelpers(initialValues)
 
   const { usernameError, passwordError, handleApiErrors, apiErrors } = useLoginValidation(
     input,
@@ -28,9 +29,9 @@ const LoginPage = (): JSX.Element => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    login(input).then(data => {
+    login(input).then((data) => {
       if (data?.hasOwnProperty('errorMessage')) {
-        // setTouched(false)
+        resetTouchedFields([{ name: 'password' }, { name: 'username' }])
         handleApiErrors(data?.errorMessage)
       } else {
         localStorage.setItem('authUser', JSON.stringify(data))
@@ -68,7 +69,7 @@ const LoginPage = (): JSX.Element => {
                   onChange={(e: FormChangeType) => handleChange(e.target)}
                   onBlur={(e: FormFocusType) => handleOnBlur(e.target)}
                 />
-                <ConditionalRender condition={usernameError.value}>
+                <ConditionalRender condition={usernameError?.value}>
                   <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
                     <Icon icon='exclamation' iconStatus='danger' />
                   </div>
@@ -89,7 +90,7 @@ const LoginPage = (): JSX.Element => {
                   onChange={(e: FormChangeType) => handleChange(e.target)}
                   onBlur={(e: FormFocusType) => handleOnBlur(e.target)}
                 />
-                <ConditionalRender condition={passwordError.value}>
+                <ConditionalRender condition={passwordError?.value}>
                   <div className='absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'>
                     <Icon icon='exclamation' iconStatus='danger' />
                   </div>
@@ -97,41 +98,7 @@ const LoginPage = (): JSX.Element => {
               </div>
             </div>
 
-            {/* <div>
-              <Input
-                hiddenLabel
-                name='username'
-                type='username'
-                id='username'
-                theme='stackedTop'
-                required
-                placeholder='Username'
-                value={input?.['username']}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e.target)}
-                touched={() => setTouched(true)}
-                fieldValidationIcon={usernameError.value}
-              />
-
-              <Input
-                hiddenLabel
-                name='password'
-                type={showPassword ? 'text' : 'password'}
-                id='password'
-                theme='stackedBottom'
-                inputStyles={{
-                  borderTopRightRadius: 0,
-                  borderBottomRightRadius: 0,
-                }}
-                required
-                placeholder='Password'
-                value={input?.['password']}
-                onChange={e => handleChange(e.target)}
-                touched={() => setTouched(true)}
-                fieldValidationIcon={passwordError.value}
-              />
-            </div> */}
-
-            <ConditionalRender condition={usernameError.value}>
+            <ConditionalRender condition={usernameError?.value}>
               <InputErrorMessage
                 name={'username'}
                 theme={'stackedBottom'}
@@ -147,7 +114,7 @@ const LoginPage = (): JSX.Element => {
               />
             </ConditionalRender>
 
-            <ConditionalRender condition={!!apiErrors && !touched}>
+            <ConditionalRender condition={!!apiErrors && !Object.values(touched)?.includes(true)}>
               <InputErrorMessage
                 name={'apiError'}
                 theme={'stackedBottom'}

@@ -9,7 +9,7 @@ import ConditionalRender from '../../CustomComponents/conditional-render'
 import { FormChangeType } from '../../types/FormChangeType'
 import { choreCreationInputFields } from '../../helpers/formHelpers/ChoreFormHelpers'
 import { ChoreCreationInputFieldTypes, ChoreCreationInputType } from '../../types/ChoreInputType'
-import ChoreSummaryCard from '../../components/ChoreSummaryCard'
+import ChoreSummaryCard from '../../components/Chores/ChoreSummaryCard'
 import useChoreValidation from '../../configs/ValidationRules/useChoreValidation'
 import useUpsertChore from '../../api/Chore/useUpsertChore'
 

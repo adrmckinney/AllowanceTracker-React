@@ -12,7 +12,7 @@ import { useState } from 'react'
 import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
 import useUpsertUserChore from '../../api/UserChore/useUpsertUserChore'
 import MoneyFormatter from '../../library/MoneyFormatter'
-import OneButtonModal from '../../CustomComponents/Modals/OneButtonModal'
+import Modal from '../../CustomComponents/Modals/Modal'
 import { UpsertUserChoreInputType, UserChoreType } from '../../types/UserChoreType'
 import { useNavigate } from 'react-router-dom'
 import Card from '../../CustomComponents/Card/Card'
@@ -46,7 +46,7 @@ const ChoresPage = ({ title }: Props): JSX.Element => {
       }
 
       return upsertUserChore(authUser?.api_token, input).then((data: UserChoreType) => {
-        setModalData(modalData => [...modalData, data])
+        setModalData((modalData) => [...modalData, data])
       })
     })
     setModalOpen(true)
@@ -132,11 +132,12 @@ const ChoresPage = ({ title }: Props): JSX.Element => {
         }
       />
       <ConditionalRender condition={modalOpen}>
-        <OneButtonModal
+        <Modal
           dataComponent={createModalDataComponents()}
           open={modalOpen}
           closeModal={() => setModalOpen(false)}
           title='You successfully signed up for these chores'
+          modalTheme='success'
           buttonComponent={
             <Button
               title='Go to your page'

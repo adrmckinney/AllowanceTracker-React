@@ -1,9 +1,9 @@
 import { isDisabled } from '@testing-library/user-event/dist/utils'
 import { buttonTheme } from '../../configs/global-styles'
-import Icon from '../Icon'
+import Icon, { IconType } from '../Icon'
 
 interface Props {
-  icon: string
+  icon: IconType
   type?: 'submit' | 'reset' | 'button'
   size?: string
   onClick?: (e: React.FormEvent<HTMLFormElement> | any) => void

@@ -17,7 +17,7 @@ const useGetUserTransfers = <T,>(api_token: string, input: T) => {
           Authorization: `Bearer ${api_token}`,
         },
       })
-      .then(res => {
+      .then((res) => {
         if (!ignore) {
           setUserTransfers(res?.data?.data)
           setPaginatorInfo(res?.data?.paginatorInfo)

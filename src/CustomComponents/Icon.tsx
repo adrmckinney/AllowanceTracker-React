@@ -8,6 +8,7 @@ import {
   MagnifyingGlassIcon,
   PencilIcon,
   ArrowsRightLeftIcon,
+  ChevronUpDownIcon,
 } from '@heroicons/react/24/solid'
 import {
   ArrowPathIcon,
@@ -22,6 +23,7 @@ import {
   BellIcon,
   CurrencyDollarIcon,
   ListBulletIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
 import { colorThemes } from '../configs/global-styles'
 
@@ -43,8 +45,34 @@ const sizes: Sizes = {
   '2xl': 'h-8 w-8',
 }
 
+export type IconType =
+  | 'mailSolid'
+  | 'refresh'
+  | 'pencilSquare'
+  | 'edit'
+  | 'delete'
+  | 'xicon'
+  | 'check'
+  | 'reply'
+  | 'code'
+  | 'terminal'
+  | 'bars'
+  | 'plusSm'
+  | 'eye'
+  | 'eyeSlash'
+  | 'bell'
+  | 'magnifyingGlass'
+  | 'dollar'
+  | 'list'
+  | 'exclamation'
+  | 'lockClosed'
+  | 'transfer'
+  | 'exclamationTriangle'
+  | 'chevronUpDown'
+  | ''
+
 type Props = {
-  icon: string
+  icon: IconType
   customIconStyle?: string
   overwriteIconStyle?: object
   size?: string
@@ -54,7 +82,7 @@ type Props = {
 type Icons = {
   mailSolid: React.ReactNode
   refresh: React.ReactNode
-  pencilSqaure: React.ReactNode
+  pencilSquare: React.ReactNode
   edit: React.ReactNode
   delete: React.ReactNode
   xicon: React.ReactNode
@@ -73,6 +101,8 @@ type Icons = {
   exclamation: React.ReactNode
   lockClosed: React.ReactNode
   transfer: React.ReactNode
+  exclamationTriangle: React.ReactNode
+  chevronUpDown: React.ReactNode
 }
 
 const Icon = ({
@@ -81,7 +111,7 @@ const Icon = ({
   overwriteIconStyle = {},
   size = 'md',
   iconStatus = '',
-}: Props) => {
+}: Props): JSX.Element => {
   const icons: Icons = {
     mailSolid: (
       <EnvelopeIcon
@@ -97,7 +127,7 @@ const Icon = ({
         aria-hidden='true'
       />
     ),
-    pencilSqaure: (
+    pencilSquare: (
       <PencilSquareIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overwriteIconStyle}
@@ -216,8 +246,27 @@ const Icon = ({
         aria-hidden='true'
       />
     ),
+    chevronUpDown: (
+      <ChevronUpDownIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
     exclamation: (
       <ExclamationCircleIcon
+        className={[
+          `${sizes[size]}`,
+          'mr-2 self-center',
+          `${iconStatus?.length > 0 ? colorThemes[iconStatus].iconText : ''}`,
+          `${customIconStyle}`,
+        ].join(' ')}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    exclamationTriangle: (
+      <ExclamationTriangleIcon
         className={[
           `${sizes[size]}`,
           'mr-2 self-center',

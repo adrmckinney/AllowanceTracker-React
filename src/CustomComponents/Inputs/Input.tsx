@@ -3,7 +3,7 @@ import ConditionalRender from '../conditional-render'
 import HorizontalLayout from '../horizontal-layout'
 import { fontThemes, inputThemes } from '../../configs/global-styles'
 import InputErrorMessage from './input-error-message'
-import Icon from '../Icon'
+import Icon, { IconType } from '../Icon'
 import { Error } from '../../types/ErrorType'
 import { FormChangeType } from '../../types/FormChangeType'
 
@@ -20,7 +20,7 @@ interface Props {
   labelRight?: boolean
   value: string | number
   required?: boolean
-  icon?: string
+  icon?: IconType
   inputStyles?: object
   labelStyles?: object
   isTextArea?: boolean

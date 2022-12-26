@@ -1,3 +1,5 @@
+import { IconType } from '../CustomComponents/Icon'
+
 export interface RegistrationInputType {
   name: string
   username: string
@@ -16,7 +18,7 @@ export type RegistrationInputFieldTypes = {
   name: string
   label: string
   type: string
-  icon?: string
+  icon?: IconType
   iconSize?: string
   iconColor?: string
   placeHolder?: string

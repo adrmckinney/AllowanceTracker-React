@@ -1,6 +1,6 @@
 import { buttonTheme } from '../../configs/global-styles'
 import ConditionalRender from '../conditional-render'
-import Icon from '../Icon'
+import Icon, { IconType } from '../Icon'
 
 interface Props {
   as?: any
@@ -9,7 +9,7 @@ interface Props {
   size?: string
   status?: string
   disabled?: boolean
-  icon?: string
+  icon?: IconType
   iconStatus?: string
   onClick?: (arg0: any) => void
   to?: string
