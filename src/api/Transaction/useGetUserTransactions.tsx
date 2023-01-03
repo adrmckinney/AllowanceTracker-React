@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { PaginatorInfoType } from '../../types/QueryModifierType'
 import { TransactionType } from '../../types/TransactionType'
 import { apiUrl } from '../routes'
+import { TransactionSummaryContext } from '../../context/TransactionSummaryContext'
+import { ErrorMessageType } from '../../types/ErrorType'
+
+export type TransactionsSuccessResponse = {
+  transactions: TransactionType[]
+  paginatorInfo: PaginatorInfoType
+}
+
+export type ErrorResponse = {
+  error: ErrorMessageType
+}
 
 const useGetUserTransactions = <T,>(api_token: string, input: T) => {
-  const [userTransactions, setUserTransactions] = useState<TransactionType[] | null>(null)
-  const [paginatorInfo, setPaginatorInfo] = useState<PaginatorInfoType | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { setTransactionsSummaryContext, setIsLoading, setPaginatorInfo } =
+    useContext(TransactionSummaryContext)
 
   useEffect(() => {
     let ignore = false
@@ -17,9 +27,9 @@ const useGetUserTransactions = <T,>(api_token: string, input: T) => {
           Authorization: `Bearer ${api_token}`,
         },
       })
-      .then(res => {
+      .then((res) => {
         if (!ignore) {
-          setUserTransactions(res?.data?.data)
+          setTransactionsSummaryContext(res?.data?.data)
           setPaginatorInfo(res?.data?.paginatorInfo)
           setIsLoading(false)
         }
@@ -30,12 +40,19 @@ const useGetUserTransactions = <T,>(api_token: string, input: T) => {
     }
   }, [api_token, input?.['modifiers']?.['page']])
 
-  const getUserTransactions = async <T,>(api_token: string, input: T) => {
+  const getUserTransactions = async <T,>(
+    api_token: string,
+    input: T
+  ): Promise<TransactionsSuccessResponse> => {
     const response = await apiUrl.post(`/transactions/user`, input, {
       headers: {
         Authorization: `Bearer ${api_token}`,
       },
     })
+
+    setTransactionsSummaryContext(response?.data?.data)
+    setPaginatorInfo(response?.data?.paginatorInfo)
+    setIsLoading(false)
 
     return {
       transactions: response?.data?.data,
@@ -43,7 +60,7 @@ const useGetUserTransactions = <T,>(api_token: string, input: T) => {
     }
   }
 
-  return { getUserTransactions, userTransactions, paginatorInfo, isLoading }
+  return { getUserTransactions }
 }
 
 export default useGetUserTransactions

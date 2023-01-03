@@ -2,8 +2,8 @@ import { useContext, useEffect } from 'react'
 import { PaginatorInfoType } from '../../types/QueryModifierType'
 import { UserChoreType } from '../../types/UserChoreType'
 import { apiUrl } from '../routes'
+import { UserChoresSummaryContext } from '../../context/UserChoresSummaryProvider'
 import { ErrorMessageType } from '../../types/ErrorType'
-import { UserChoresContext } from '../../context/UserChoresListProvider'
 
 export type UserChoresListSuccessResponse = {
   chores: UserChoreType[]
@@ -14,8 +14,9 @@ export type ErrorResponse = {
   error: ErrorMessageType
 }
 
-const useGetUserChoresList = <T,>(api_token: string, input: T) => {
-  const { setUserChoresContext, setIsLoading, setPaginatorInfo } = useContext(UserChoresContext)
+const useGetUserChoresSummaryList = <T,>(api_token: string, input: T) => {
+  const { setUserChoresSummaryContext, setIsLoading, setPaginatorInfo } =
+    useContext(UserChoresSummaryContext)
 
   useEffect(() => {
     let ignore = false
@@ -28,7 +29,7 @@ const useGetUserChoresList = <T,>(api_token: string, input: T) => {
       })
       .then((res) => {
         if (!ignore) {
-          setUserChoresContext(res?.data?.data)
+          setUserChoresSummaryContext(res?.data?.data)
           setPaginatorInfo(res?.data?.paginatorInfo)
           setIsLoading(false)
         }
@@ -49,7 +50,7 @@ const useGetUserChoresList = <T,>(api_token: string, input: T) => {
       },
     })
 
-    setUserChoresContext(response?.data?.data)
+    setUserChoresSummaryContext(response?.data?.data)
     setPaginatorInfo(response?.data?.paginatorInfo)
     setIsLoading(false)
 
@@ -59,7 +60,10 @@ const useGetUserChoresList = <T,>(api_token: string, input: T) => {
     }
   }
 
-  return { getUserChores }
+  return {
+    getUserChores,
+    // userChores, paginatorInfo, isLoading
+  }
 }
 
-export default useGetUserChoresList
+export default useGetUserChoresSummaryList

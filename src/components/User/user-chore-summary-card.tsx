@@ -1,16 +1,16 @@
-import StatusBadge from '../../CustomComponents/Badges/StatusBadge'
-import TwoColLayout from '../../CustomComponents/two-col-layout'
-import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
-import { selectMostRecentDate } from '../../helpers/choresHelpers/ChoreHelpers'
 import DateFormatter from '../../library/DateFormatter'
 import MoneyFormatter from '../../library/MoneyFormatter'
+import TwoColLayout from '../../CustomComponents/two-col-layout'
 import { UserChoreType } from '../../types/UserChoreType'
+import StatusBadge from '../../CustomComponents/Badges/StatusBadge'
+import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
+import { selectMostRecentDate } from '../../helpers/choresHelpers/ChoreHelpers'
 
 type Props = {
   userChore: UserChoreType
 }
 
-const UpserChoreStatus = ({ userChore }: Props) => {
+const UserChoreSummaryCard = ({ userChore }: Props) => {
   return (
     <>
       <div className='grid grid-cols-1 gap-4'>
@@ -36,7 +36,7 @@ const UpserChoreStatus = ({ userChore }: Props) => {
                   />
                 </p>
                 <p className='truncate text-sm text-gray-500'>
-                  {DateFormatter.parseIso(selectMostRecentDate(userChore))}
+                  {DateFormatter.parseIso('' + userChore?.updated_at)}
                 </p>
               </>
             }
@@ -49,4 +49,4 @@ const UpserChoreStatus = ({ userChore }: Props) => {
   )
 }
 
-export default UpserChoreStatus
+export default UserChoreSummaryCard

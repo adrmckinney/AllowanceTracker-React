@@ -1,4 +1,3 @@
-import { isDisabled } from '@testing-library/user-event/dist/utils'
 import { buttonTheme } from '../../configs/global-styles'
 import Icon, { IconType } from '../Icon'
 

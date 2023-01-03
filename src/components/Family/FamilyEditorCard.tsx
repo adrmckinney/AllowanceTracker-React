@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useGetFamily from '../../api/Family/useGetFamily'
 import useUpsertFamily, { ErrorResponse, SuccessResponse } from '../../api/Family/useUpsertFamily'
 import useGetUser from '../../api/User/useGetUser'
@@ -13,6 +13,7 @@ import useAuthUser from '../../hooks/useAuthUser'
 import useFormHelpers from '../../hooks/useFormHelpers'
 import { FormChangeType } from '../../types/FormChangeType'
 import useUpsertUser from '../../api/User/useUpsertUser'
+import { ToastContext } from '../../context/ToastProvider'
 
 type InputType = {
   name: string
@@ -21,6 +22,7 @@ type InputType = {
 
 const FamilyEditorCard = () => {
   const { authUser, updateAuthLocalStorage } = useAuthUser()
+  const { handleToastSuccess, handleToastDanger } = useContext(ToastContext)
   const { family, getFamily } = useGetFamily(authUser?.api_token, authUser?.family_id)
   const [isEditing, setIsEditing] = useState(false)
   const { input, handleChange, setInput, touched, handleOnBlur } = useFormHelpers<InputType>({
@@ -56,7 +58,14 @@ const FamilyEditorCard = () => {
 
   const handleJoinFamily = () => {
     upsertUser(authUser?.api_token, { id: authUser?.id, family_id: input?.family_id }).then(
-      (user) => updateAuthLocalStorage('familyId', user?.family_id)
+      (user) => {
+        if ('error' in user) {
+          handleToastDanger(user?.error?.message)
+        } else {
+          updateAuthLocalStorage('familyId', user?.family_id)
+          handleToastSuccess('Successfully joined to family')
+        }
+      }
     )
   }
 

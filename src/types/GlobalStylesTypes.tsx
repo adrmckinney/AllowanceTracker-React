@@ -8,6 +8,24 @@ export type ColorThemes = {
   actionIconTextColor: ActionColorTheme
   skeleton: { textHeavy: string; textLight: string; divideLine: string; border: string }
   checkbox: { text: string; focusRing: string; border: string }
+  toast: {
+    success: {
+      bgColor: string
+      text: string
+      iconColor: string
+      iconBgColor: string
+      hoverIconText: string
+      hoverIconBg: string
+    }
+    danger: {
+      bgColor: string
+      text: string
+      iconColor: string
+      iconBgColor: string
+      hoverIconText: string
+      hoverIconBg: string
+    }
+  }
 }
 
 export type SizeThemes = {
@@ -84,6 +102,7 @@ export type ButtonTheme = {
   link: string
   navLink: string
   icon: string
+  text: string
 }
 
 export type FontThemes = {

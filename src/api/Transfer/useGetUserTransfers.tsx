@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
-import { PaginatorInfoType } from '../../types/QueryModifierType'
-import { TransferType } from '../../types/TransferType'
+import { useContext, useEffect } from 'react'
 import { apiUrl } from '../routes'
+import { TransferSummaryContext } from '../../context/TransferSummaryProvider'
 
 const useGetUserTransfers = <T,>(api_token: string, input: T) => {
-  const [userTransfers, setUserTransfers] = useState<TransferType[] | null>(null)
-  const [paginatorInfo, setPaginatorInfo] = useState<PaginatorInfoType | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { setTransferSummaryContext, setPaginatorInfo, setIsLoading } =
+    useContext(TransferSummaryContext)
 
   useEffect(() => {
     let ignore = false
@@ -19,7 +17,7 @@ const useGetUserTransfers = <T,>(api_token: string, input: T) => {
       })
       .then((res) => {
         if (!ignore) {
-          setUserTransfers(res?.data?.data)
+          setTransferSummaryContext(res?.data?.data)
           setPaginatorInfo(res?.data?.paginatorInfo)
           setIsLoading(false)
         }
@@ -36,13 +34,18 @@ const useGetUserTransfers = <T,>(api_token: string, input: T) => {
         Authorization: `Bearer ${api_token}`,
       },
     })
+
+    setTransferSummaryContext(response?.data?.data)
+    setPaginatorInfo(response?.data?.paginatorInfo)
+    setIsLoading(false)
+
     return {
       transfers: response?.data?.data,
       paginatorInfo: response?.data?.paginatorInfo,
     }
   }
 
-  return { getUserTransfers, userTransfers, paginatorInfo, isLoading }
+  return { getUserTransfers }
 }
 
 export default useGetUserTransfers

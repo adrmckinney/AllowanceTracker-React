@@ -73,6 +73,24 @@ export const colorThemes: ColorThemes = {
     focusRing: 'focus:ring-sky-500',
     border: 'border-gray-300',
   },
+  toast: {
+    success: {
+      bgColor: 'bg-emerald-500',
+      text: 'text-white',
+      iconColor: 'text-white',
+      iconBgColor: 'bg-emerald-600',
+      hoverIconText: 'hover:text-gray-300',
+      hoverIconBg: 'hover:bg-emerald-400',
+    },
+    danger: {
+      bgColor: 'bg-red-700',
+      text: 'text-white',
+      iconColor: 'text-white',
+      iconBgColor: 'bg-red-800',
+      hoverIconText: 'hover:text-gray-300',
+      hoverIconBg: 'hover:bg-red-600',
+    },
+  },
 }
 
 export const sizeThemes: SizeThemes = {
@@ -106,7 +124,13 @@ export const buttonTheme: ButtonTheme = {
     colorThemes.secondary.text,
     colorThemes.secondary.focusRing,
   ].join(' '),
-  cancel: ['bg-white', 'hover:bg-gray-50', 'text-gray-700'].join(' '),
+  cancel: [
+    'bg-white',
+    'hover:bg-gray-50',
+    'text-gray-700',
+    'rounded-md border border-gray-300',
+    'font-medium outline outline-1 outline-offset-0 outline-sky-500',
+  ].join(' '),
   danger: [
     colorThemes.danger.bgColor,
     colorThemes.danger.hoverBgColor,
@@ -137,6 +161,7 @@ export const buttonTheme: ButtonTheme = {
     colorThemes.navLink.hoverText,
   ].join(' '),
   icon: [colorThemes.primary.iconText, colorThemes.primary.hoverIconText].join(' '),
+  text: ['border-none outline-none outline-transparent shadow-none rounded-none'].join(' '),
 }
 
 export const inputThemes: InputThemes = {

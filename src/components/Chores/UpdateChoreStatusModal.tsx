@@ -1,49 +1,59 @@
-import StatusBadge from '../../CustomComponents/Badges/StatusBadge'
-import TwoColLayout from '../../CustomComponents/two-col-layout'
-import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
-import DateFormatter from '../../library/DateFormatter'
-import MoneyFormatter from '../../library/MoneyFormatter'
+import ChoreStatuses, { ChoreStatusEnumType } from '../../configs/Enums/ChoreStatuses'
 import { UserChoreType } from '../../types/UserChoreType'
-import { selectMostRecentDate } from '../../helpers/choresHelpers/ChoreHelpers'
 import SelectDropdown from '../../CustomComponents/Selects/SelectDropdown'
 import useAuthUser from '../../hooks/useAuthUser'
-import useUpsertUserChore from '../../api/UserChore/useUpsertUserChore'
-import { useState } from 'react'
+import React, { MutableRefObject, useState } from 'react'
 import Button from '../../CustomComponents/Buttons/Button'
 import Modal from '../../CustomComponents/Modals/Modal'
-import UpserChoreStatus from './UpserChoreStatus'
-import ChoreDetailCard from '../User/chore-summary-card'
+import UserChoreSummaryCard from '../User/user-chore-summary-card'
+import ConditionalRender from '../../CustomComponents/conditional-render'
 
 type Props = {
   userChore: UserChoreType
   modalOpen: boolean
   closeModal: () => void
+  formId?: string
+  formRef?: any
 }
 
-const UpdateChoreStatusModal = ({ userChore, modalOpen, closeModal }: Props) => {
+export type UserChoreFormRefType = {
+  status: ChoreStatusEnumType
+  userChoreId: number
+}
+
+const UpdateChoreStatusModal = ({ userChore, modalOpen, closeModal, formId, formRef }: Props) => {
+  const { authUser, isChild } = useAuthUser()
   const [selected, setSelected] = useState({
     value: userChore?.chore_status,
     name: ChoreStatuses.findByValue(userChore?.chore_status)?.name,
   })
-  const { authUser } = useAuthUser()
-  const { upsertUserChore } = useUpsertUserChore()
 
-  // const handleUpdateUserChore = () => {
-  //   upsertUserChore(authUser?.api_token)
-  // }
+  const handleSelected = (status: ChoreStatusEnumType) => {
+    setSelected(status)
+    formRef.current = { status, userChoreId: userChore?.id }
+  }
 
   return (
     <>
       <Modal
         dataComponent={
           <>
-            <UpserChoreStatus userChore={userChore} />
-            <SelectDropdown
-              label='Update Status'
-              items={ChoreStatuses}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <UserChoreSummaryCard userChore={userChore} />
+            <ConditionalRender
+              condition={ChoreStatuses.checkIfEditable(userChore?.chore_status, authUser)}
+            >
+              <SelectDropdown
+                label='Update Status'
+                items={
+                  isChild(authUser)
+                    ? ChoreStatuses.getUpdateStatusChildSelections()
+                    : ChoreStatuses.getUpdateStatusParentSelections()
+                }
+                selected={selected}
+                setSelected={handleSelected}
+                optionsHeight='max-h-20'
+              />
+            </ConditionalRender>
           </>
         }
         open={modalOpen}
@@ -51,8 +61,22 @@ const UpdateChoreStatusModal = ({ userChore, modalOpen, closeModal }: Props) => 
         title='Update Your Chore'
         twoButtonComponent={
           <>
-            <Button title='Cancel' status='cancel' customClassName='w-full' onClick={() => {}} />
-            <Button title='Save' status='primary' customClassName='w-full' onClick={() => {}} />
+            <Button
+              type='button'
+              title='Cancel'
+              size='sm'
+              status='cancel'
+              customClassName='w-full text-xs sm:text-sm'
+              onClick={closeModal}
+            />
+            <Button
+              type='submit'
+              formId={formId}
+              title='Save'
+              size='sm'
+              status='primary'
+              customClassName='w-full text-xs sm:text-sm'
+            />
           </>
         }
       />

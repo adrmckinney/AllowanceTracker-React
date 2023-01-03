@@ -11,6 +11,8 @@ export interface UserChoreType {
   rejection_reason: string
   rejection_date: EpochTimeStamp
   created_at: EpochTimeStamp
+  updated_at: EpochTimeStamp
+  transactions_created: boolean
 }
 
 interface ChoreUser {

@@ -1,13 +1,13 @@
-const ConfigTools = configs => {
-  const map = mapFunc => {
-    return Object.values(configs).map(mapFunc)
+const ConfigTools = (configs) => {
+  const map = () => {
+    return Object.values(configs)?.map((config) => config)
   }
 
-  const keyMap = mapFunc => {
+  const keyMap = (mapFunc) => {
     return Object.entries(configs).map(mapFunc)
   }
 
-  const filter = filterFunc => {
+  const filter = (filterFunc) => {
     return Object.values(configs).filter(filterFunc)
   }
 
@@ -24,7 +24,7 @@ const ConfigTools = configs => {
   }
 
   const where = (key: string, operator: string, target: any) => {
-    return Object.values(configs).filter(item => {
+    return Object.values(configs).filter((item) => {
       switch (operator) {
         case '=':
           return item?.[key] === target

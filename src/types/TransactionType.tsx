@@ -8,6 +8,7 @@ export interface TransactionType {
   direction: number
   user: User
   created_at: EpochTimeStamp
+  transactions_created: boolean
 }
 
 interface User {

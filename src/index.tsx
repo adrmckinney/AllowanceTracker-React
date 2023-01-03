@@ -4,12 +4,21 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter } from 'react-router-dom'
+import ToastProvider from './context/ToastProvider'
+import UserChoresProvider from './context/UserChoresListProvider'
+import ModifiersProvider from './context/ModifiersProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ModifiersProvider>
+        <UserChoresProvider>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </UserChoresProvider>
+      </ModifiersProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

@@ -8,9 +8,10 @@ type Props = {
   lowerGridSection?: React.ReactNode
   footer?: React.ReactNode
   headerRight?: React.ReactNode
+  modal?: React.ReactNode
 }
 
-const Page = ({ title, upperSection, lowerGridSection, footer, headerRight }: Props) => {
+const Page = ({ title, upperSection, lowerGridSection, footer, headerRight, modal }: Props) => {
   return (
     <>
       <main className='relative -mt-40'>
@@ -23,11 +24,9 @@ const Page = ({ title, upperSection, lowerGridSection, footer, headerRight }: Pr
               </div>
             }
           >
-            <div className='flex justify-between'>
-              <div className='flex-1 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-                <h1 className='text-3xl font-bold tracking-tight text-white'>{title}</h1>
-              </div>
-              <PaddedLayout classNames='pr-10'>{headerRight}</PaddedLayout>
+            <div className='flex justify-between items-center mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+              <h1 className='text-3xl font-bold tracking-tight text-white'>{title}</h1>
+              <div>{headerRight}</div>
             </div>
           </ConditionalRender>
         </header>
@@ -39,10 +38,13 @@ const Page = ({ title, upperSection, lowerGridSection, footer, headerRight }: Pr
             </PaddedLayout>
           </div>
         </div>
-        <div className='mt-12 border-t border-gray-200 pt-8'>
-          <p className='text-base text-gray-400 xl:text-center'>{footer}</p>
-        </div>
+        <ConditionalRender condition={!!footer}>
+          <div className='mt-12 border-t border-gray-200 pt-8'>
+            <div className='text-base text-gray-400 xl:text-center'>{footer}</div>
+          </div>
+        </ConditionalRender>
       </main>
+      {modal}
     </>
   )
 }

@@ -3,6 +3,7 @@ export interface QueryModifierType {
   page: number
   searchTarget: string
   filters: FilterOptionsType
+  sorts: SortType
 }
 
 // if adding option here, don't forget to add also to
@@ -15,6 +16,8 @@ export interface FilterOptionsType {
   transferUserId: number | null
   transactionUserId: number | null
   flags?: string[] | undefined
+  choreStatus: number | null
+  transferStatus: number | null
 }
 
 export interface MoneyRangeType {
@@ -32,3 +35,10 @@ export interface PaginatorInfoType {
   perPage: number
   total: number
 }
+
+export interface SortType {
+  column: string
+  direction: SortDirection
+}
+
+export type SortDirection = 'asc' | 'desc' | '' | string

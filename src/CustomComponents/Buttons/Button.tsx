@@ -6,8 +6,9 @@ interface Props {
   as?: any
   type?: 'button' | 'submit' | 'reset'
   title: string
+  formId?: string
   size?: string
-  status?: string
+  status?: 'primary' | 'secondary' | 'cancel' | 'danger' | 'link' | 'navLink' | 'icon' | ''
   disabled?: boolean
   icon?: IconType
   iconStatus?: string
@@ -33,6 +34,7 @@ const Button = ({
   as: CustomTag = 'button',
   type = 'button',
   title,
+  formId,
   size = 'md',
   status = 'primary',
   disabled = false,
@@ -59,6 +61,7 @@ const Button = ({
     <CustomTag
       type={type}
       to={to}
+      form={formId}
       ref={ref}
       disabled={disabled}
       onClick={onClick}

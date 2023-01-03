@@ -9,6 +9,9 @@ import {
   PencilIcon,
   ArrowsRightLeftIcon,
   ChevronUpDownIcon,
+  ChevronDownIcon,
+  FunnelIcon,
+  MinusIcon,
 } from '@heroicons/react/24/solid'
 import {
   ArrowPathIcon,
@@ -69,6 +72,9 @@ export type IconType =
   | 'transfer'
   | 'exclamationTriangle'
   | 'chevronUpDown'
+  | 'chevronDown'
+  | 'funnel'
+  | 'minus'
   | ''
 
 type Props = {
@@ -103,6 +109,9 @@ type Icons = {
   transfer: React.ReactNode
   exclamationTriangle: React.ReactNode
   chevronUpDown: React.ReactNode
+  chevronDown: React.ReactNode
+  funnel: React.ReactNode
+  minus: React.ReactNode
 }
 
 const Icon = ({
@@ -197,6 +206,13 @@ const Icon = ({
         aria-hidden='true'
       />
     ),
+    minus: (
+      <MinusIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
     eye: (
       <EyeIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
@@ -248,6 +264,20 @@ const Icon = ({
     ),
     chevronUpDown: (
       <ChevronUpDownIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    chevronDown: (
+      <ChevronDownIcon
+        className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
+        style={overwriteIconStyle}
+        aria-hidden='true'
+      />
+    ),
+    funnel: (
+      <FunnelIcon
         className={`${sizes[size]} mr-2 self-center ${customIconStyle}`}
         style={overwriteIconStyle}
         aria-hidden='true'

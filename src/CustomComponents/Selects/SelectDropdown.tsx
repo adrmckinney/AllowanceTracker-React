@@ -1,20 +1,7 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import Icon from '../Icon'
 import { colorThemes } from '../../configs/global-styles'
-
-const people = [
-  { id: 1, name: 'Wade Cooper' },
-  { id: 2, name: 'Arlene Mccoy' },
-  { id: 3, name: 'Devon Webb' },
-  { id: 4, name: 'Tom Cook' },
-  { id: 5, name: 'Tanya Fox' },
-  { id: 6, name: 'Hellen Schmidt' },
-  { id: 7, name: 'Caroline Schultz' },
-  { id: 8, name: 'Mason Heaney' },
-  { id: 9, name: 'Claudie Smitham' },
-  { id: 10, name: 'Emil Schaefer' },
-]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -24,7 +11,7 @@ export type ItemType = {
   name: string
   value: number
   id?: number | string
-  [key: string]: any
+  [key: string]: string | number | boolean
 }
 
 type Props = {
@@ -32,11 +19,20 @@ type Props = {
   items: ItemType[]
   selected: ItemType
   setSelected: (arg0: ItemType) => void
+  optionsHeight?: string
 }
 
-const SelectDropdown = ({ label, items, selected, setSelected }: Props) => {
+const SelectDropdown = ({
+  label,
+  items,
+  selected,
+  setSelected,
+  optionsHeight = 'max-h-60',
+}: Props) => {
   const defaultValue = { name: 'Select', value: 0 }
-  const preparedItems = items.map((item: ItemType) => item)
+  const preparedItems = items
+    ?.filter((item: ItemType) => typeof item === 'object')
+    ?.filter((item: ItemType) => item?.value !== selected?.value)
 
   return (
     <>
@@ -47,7 +43,14 @@ const SelectDropdown = ({ label, items, selected, setSelected }: Props) => {
               {label}
             </Listbox.Label>
             <div className='relative mt-1'>
-              <Listbox.Button className='relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm'>
+              <Listbox.Button
+                className={[
+                  'relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm',
+                  colorThemes.primary.focusBorder,
+                  colorThemes.primary.focusRing,
+                  'focus:outline-none focus:ring-1 text-xs sm:text-sm',
+                ].join(' ')}
+              >
                 <span className='block truncate'>{selected?.name}</span>
                 <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                   <Icon icon='chevronUpDown' size='lg' customIconStyle='text-gray-400' />
@@ -61,13 +64,20 @@ const SelectDropdown = ({ label, items, selected, setSelected }: Props) => {
                 leaveFrom='opacity-100'
                 leaveTo='opacity-0'
               >
-                <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                <Listbox.Options
+                  className={[
+                    optionsHeight,
+                    'absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm',
+                  ].join(' ')}
+                >
                   {preparedItems.map((item) => (
                     <Listbox.Option
-                      key={item.value}
+                      key={`${item.value}-${item.name}`}
                       className={({ active }) =>
                         classNames(
-                          active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                          active
+                            ? ['text-white', colorThemes.primary.bgColor].join(' ')
+                            : 'text-gray-900',
                           'relative cursor-default select-none py-2 pl-3 pr-9'
                         )
                       }

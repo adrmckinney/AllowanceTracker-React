@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import useUpsertUser from '../../api/User/useUpsertUser'
 import PermissionTypes from '../../configs/Enums/PermissionTypes'
 import { colorThemes } from '../../configs/global-styles'
@@ -15,6 +15,7 @@ import DateFormatter from '../../library/DateFormatter'
 import MoneyFormatter from '../../library/MoneyFormatter'
 import { FormChangeType } from '../../types/FormChangeType'
 import { UserType } from '../../types/UserType'
+import { ToastContext } from '../../context/ToastProvider'
 
 type Props = {
   user: UserType
@@ -45,6 +46,7 @@ type InitialValues = {
 }
 
 const UserSummarySection = ({ user, isLoading }: Props): JSX.Element => {
+  const { handleToastSuccess, handleToastDanger } = useContext(ToastContext)
   const [isEditing, setIsEditing] = useState<EditingState>({
     name: false,
     username: false,
@@ -91,7 +93,12 @@ const UserSummarySection = ({ user, isLoading }: Props): JSX.Element => {
     }
 
     upsertUser(authUser?.api_token, upsertInput).then((data) => {
-      handleCancel()
+      if ('error' in data) {
+        handleToastDanger(data?.error?.message)
+      } else {
+        handleToastSuccess(`Your ${updatedFieldKey} has been updated`)
+        handleCancel()
+      }
     })
   }
 

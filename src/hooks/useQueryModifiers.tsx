@@ -7,23 +7,26 @@ type MultipleModifierOptions = {
   filterValue: any
 }
 
+const filterOptions: FilterOptionsType = {
+  moneyRanges: [{ min: null, max: null }],
+  dateRanges: [{ start: '', end: '' }],
+  userChoreUserId: null,
+  userChoreChoreId: null,
+  transferUserId: null,
+  transactionUserId: null,
+  choreStatus: null,
+  transferStatus: null,
+}
+
+export const defaultQueryModifiers: QueryModifierType = {
+  resultsPerPage: 10,
+  page: 1,
+  searchTarget: '',
+  filters: filterOptions,
+  sorts: { column: '', direction: '' },
+}
+
 const useQueryModifiers = (initialPage: number = 1, resultsPerPage: number = 10) => {
-  const filterOptions: FilterOptionsType = {
-    moneyRanges: [{ min: null, max: null }],
-    dateRanges: [{ start: '', end: '' }],
-    userChoreUserId: null,
-    userChoreChoreId: null,
-    transferUserId: null,
-    transactionUserId: null,
-  }
-
-  const defaultQueryModifiers: QueryModifierType = {
-    resultsPerPage: 10,
-    page: 1,
-    searchTarget: '',
-    filters: filterOptions,
-  }
-
   const defaultPaginatorInfo: PaginatorInfoType = {
     currentPage: 1,
     lastPage: 1,
