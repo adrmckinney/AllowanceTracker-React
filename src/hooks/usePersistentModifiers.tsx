@@ -1,6 +1,11 @@
-import { useContext, useEffect } from 'react'
-import { ModifiersContext } from '../context/ModifiersProvider'
-import { QueryModifierType, SortDirection, SortType } from '../types/QueryModifierType'
+import { useEffect } from 'react'
+import {
+  FilterOptionsType,
+  QueryModifierType,
+  SortDirection,
+  SortType,
+} from '../types/QueryModifierType'
+import { ModifierFilterTypes } from './useQueryModifiers'
 
 export type ModifiersInputType = {
   modifiers: QueryModifierType
@@ -10,7 +15,6 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
   useEffect(() => {
     let ignore = false
     if (!ignore && initialValues !== null) {
-      //   setModifiersContext(initialValues)
       localStorage.setItem('modifiers', JSON.stringify(initialValues))
     }
 
@@ -19,7 +23,7 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
     }
   }, [!!initialValues])
 
-  const setStorageModifiers = (modifiers: QueryModifierType) => {
+  const setStorageModifiers = (modifiers: ModifiersInputType) => {
     localStorage.setItem('modifiers', JSON.stringify(modifiers))
   }
 
@@ -28,8 +32,7 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
   }
 
   const handlePersistantPagination = (newPage: number) => {
-    const currentModifiers = getStorageModifiers()
-    let newModifierInput = { ...currentModifiers }
+    let newModifierInput = { ...getStorageModifiers() }
     let modifiersCopy: QueryModifierType = { ...newModifierInput.modifiers }
 
     const newPageCopy = { ...modifiersCopy, page: newPage }
@@ -40,8 +43,7 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
   }
 
   const handlePersistentSort = (column: string, direction: SortDirection) => {
-    const currentModifiers = getStorageModifiers()
-    let newModifierInput = { ...currentModifiers }
+    let newModifierInput = { ...getStorageModifiers() }
     let modifiersCopy: QueryModifierType = { ...newModifierInput.modifiers }
     let sortsCopy: QueryModifierType = {
       ...modifiersCopy,
@@ -58,17 +60,19 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
     return newModifierInput
   }
 
-  const setPersistentFilters = (filterKey: string, value: any) => {
-    const currentModifiers = getStorageModifiers()
-    const newModifiers = {
-      ...currentModifiers,
-      filters: {
-        ...currentModifiers.filters,
-        [filterKey]: value,
-      },
-    }
-    setStorageModifiers(newModifiers)
-    return newModifiers
+  const setPersistentFilters = (filterKey: ModifierFilterTypes, value: number) => {
+    let newModifiersInput: ModifiersInputType = { ...getStorageModifiers() }
+    let modifiersCopy: QueryModifierType = { ...newModifiersInput.modifiers }
+    let filtersCopy: FilterOptionsType = { ...modifiersCopy.filters }
+    let targetFilterValues: number[] = [...filtersCopy?.[filterKey]]
+
+    const newFilterValues: number[] = [...targetFilterValues, value]
+    filtersCopy[filterKey] = newFilterValues
+    modifiersCopy.filters = filtersCopy
+    newModifiersInput.modifiers = modifiersCopy
+
+    setStorageModifiers(newModifiersInput)
+    return newModifiersInput
   }
 
   return {

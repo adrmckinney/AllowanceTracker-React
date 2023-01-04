@@ -4,7 +4,6 @@ import TwoColLayout from '../../CustomComponents/two-col-layout'
 import { UserChoreType } from '../../types/UserChoreType'
 import StatusBadge from '../../CustomComponents/Badges/StatusBadge'
 import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
-import { selectMostRecentDate } from '../../helpers/choresHelpers/ChoreHelpers'
 
 type Props = {
   userChore: UserChoreType

@@ -1,6 +1,5 @@
 import { Dialog, Disclosure } from '@headlessui/react'
 import MobileSlidbarTransition from '../Transitions/MobileSlidbarTransition'
-import { colorThemes } from '../../configs/global-styles'
 import Icon from '../Icon'
 import ChoreStatuses from '../../configs/Enums/ChoreStatuses'
 import usePersistentModifiers from '../../hooks/usePersistentModifiers'
@@ -13,8 +12,7 @@ type Props = {
 }
 
 const MobileFilterSlidebar = ({ mobileFiltersOpen, close, title }: Props) => {
-  const { getStorageModifiers, setStorageModifiers, setPersistentFilters } =
-    usePersistentModifiers(null)
+  const { setPersistentFilters } = usePersistentModifiers(null)
 
   const filters = [
     {
@@ -46,6 +44,13 @@ const MobileFilterSlidebar = ({ mobileFiltersOpen, close, title }: Props) => {
       ],
     },
   ]
+
+  const handleSelected = ({ name, value }) => {
+    console.log('name', name)
+    console.log('value', value)
+
+    setPersistentFilters('choreStatuses', value)
+  }
   return (
     <>
       <MobileSlidbarTransition mobileFiltersOpen={mobileFiltersOpen} close={close}>
@@ -62,7 +67,6 @@ const MobileFilterSlidebar = ({ mobileFiltersOpen, close, title }: Props) => {
             </button>
           </div>
 
-          {/* Filters */}
           <form className='mt-4 border-t border-gray-200'>
             {filters.map((section) => (
               <Disclosure as='div' key={section.id} className='border-t border-gray-200 px-4 py-6'>
@@ -85,32 +89,14 @@ const MobileFilterSlidebar = ({ mobileFiltersOpen, close, title }: Props) => {
                         {section.options.map((option, optionIdx: number) => (
                           <div key={option?.value} className='flex items-center'>
                             <Checkbox
-                              id={`filter-mobile-${section?.id}-${optionIdx}`}
+                              id={`chore-statuses`}
                               name={option?.name}
                               label={option?.name}
                               value={option?.value}
-                              legend='Chore Status'
+                              legend='Chore Statuses'
                               checked={option?.checked}
-                              handleChange={() => {}}
+                              handleChange={(e) => handleSelected(e?.target)}
                             />
-                            {/* <input
-                              id={`filter-mobile-${section.id}-${optionIdx}`}
-                              name={option?.name}
-                              value={option?.value}
-                              type='checkbox'
-                              className={[
-                                'h-4 w-4 rounded ',
-                                colorThemes.checkbox.text,
-                                colorThemes.checkbox.focusRing,
-                                colorThemes.checkbox.border,
-                              ].join(' ')}
-                            />
-                            <label
-                              htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                              className='ml-3 min-w-0 flex-1 text-gray-500'
-                            >
-                              {option?.name}
-                            </label> */}
                           </div>
                         ))}
                       </div>

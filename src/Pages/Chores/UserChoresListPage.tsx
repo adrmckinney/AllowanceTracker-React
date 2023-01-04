@@ -93,6 +93,15 @@ const UserChoresListPage = ({ title }: Props): JSX.Element => {
     getUserChores(authUser?.api_token, handlePersistentSort(column, direction))
   }
 
+  const handleMobileClose = () => {
+    setMobileFiltersOpen(false)
+    getUserChores(authUser?.api_token, getStorageModifiers())
+    // handleFilter()
+  }
+
+  //   const handleFilter = () => {
+  //   }
+
   return (
     <>
       <Page
@@ -146,7 +155,7 @@ const UserChoresListPage = ({ title }: Props): JSX.Element => {
         }
       />
       <MobileFilterSlidebar
-        close={() => setMobileFiltersOpen(false)}
+        close={handleMobileClose}
         mobileFiltersOpen={mobileFiltersOpen}
         title='Chore Filters'
       />

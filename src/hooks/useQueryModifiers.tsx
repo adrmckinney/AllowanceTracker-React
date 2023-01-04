@@ -7,6 +7,17 @@ type MultipleModifierOptions = {
   filterValue: any
 }
 
+export type ModifierFilterTypes =
+  | 'moneyRanges'
+  | 'dateRanges'
+  | 'userChoreuserId'
+  | 'userChoreChoreId'
+  | 'transferuserId'
+  | 'transactionUserId'
+  | 'choreStatuses'
+  | 'transferStatuses'
+  | ''
+
 const filterOptions: FilterOptionsType = {
   moneyRanges: [{ min: null, max: null }],
   dateRanges: [{ start: '', end: '' }],
@@ -14,8 +25,8 @@ const filterOptions: FilterOptionsType = {
   userChoreChoreId: null,
   transferUserId: null,
   transactionUserId: null,
-  choreStatus: null,
-  transferStatus: null,
+  choreStatuses: [],
+  transferStatuses: [],
 }
 
 export const defaultQueryModifiers: QueryModifierType = {

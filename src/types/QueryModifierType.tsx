@@ -16,8 +16,8 @@ export interface FilterOptionsType {
   transferUserId: number | null
   transactionUserId: number | null
   flags?: string[] | undefined
-  choreStatus: number | null
-  transferStatus: number | null
+  choreStatuses: number[] | []
+  transferStatuses: number[] | []
 }
 
 export interface MoneyRangeType {
