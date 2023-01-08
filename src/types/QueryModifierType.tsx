@@ -18,6 +18,9 @@ export interface FilterOptionsType {
   flags?: string[] | undefined
   choreStatuses: number[] | []
   transferStatuses: number[] | []
+  chores: number[] | []
+  users: number[] | []
+  approvers: number[] | []
 }
 
 export interface MoneyRangeType {

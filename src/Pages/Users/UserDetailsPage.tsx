@@ -62,7 +62,7 @@ const UserDetailsPage = ({ title }: Props) => {
     useContext(TransactionSummaryContext)
   const token = authUser?.api_token
   useGetUser(token, id)
-  const resultsPerPage = 25
+  const resultsPerPage = 5
 
   const getModifiers = (target: 'userChoreUserId' | 'transferUserId' | 'transactionUserId') => {
     return {

@@ -12,7 +12,7 @@ export type ChoreStatusEnumType = {
   value: number
   name: string
   statusColorTheme: string
-  checked: false
+  categoryGroup: 'choreStatuses'
 }
 
 export default ConfigTools({
@@ -20,27 +20,27 @@ export default ConfigTools({
     value: 1,
     name: 'In Progress',
     statusColorTheme: 'pending',
-    checked: false,
+    categoryGroup: 'choreStatuses',
   },
   pending_approval: {
     value: 2,
     name: 'Pending Approval',
     statusColorTheme: 'pending',
-    checked: false,
+    categoryGroup: 'choreStatuses',
   },
   approved: {
     value: 3,
     name: 'Approved',
     selectionName: 'Approve',
     statusColorTheme: 'success',
-    checked: false,
+    categoryGroup: 'choreStatuses',
   },
   rejected: {
     value: 4,
     name: 'Rejected',
     selectionName: 'Reject',
     statusColorTheme: 'danger',
-    checked: false,
+    categoryGroup: 'choreStatuses',
   },
   checkIfEditable: function (value: number, authUser: AuthUserType) {
     switch (value) {

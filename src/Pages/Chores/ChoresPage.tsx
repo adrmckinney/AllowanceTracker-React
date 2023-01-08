@@ -17,6 +17,7 @@ import { UpsertUserChoreInputType, UserChoreType } from '../../types/UserChoreTy
 import { useNavigate } from 'react-router-dom'
 import Card from '../../CustomComponents/Card/Card'
 import CardBody from '../../CustomComponents/Card/card-body'
+import { handleCheckboxSelectedValues } from '../../helpers/checkboxHelpers'
 
 interface Props {
   title: string
@@ -53,16 +54,12 @@ const ChoresPage = ({ title }: Props): JSX.Element => {
   }
 
   const handleChange = ({ value }) => {
-    let selectedChoreIdsCopy = [...selectedChoreIds]
-
-    if (!selectedChoreIds?.includes(+value)) {
-      selectedChoreIdsCopy?.push(+value)
-      setSelectedChoreIds(selectedChoreIdsCopy)
-    } else {
-      const valueIdx = selectedChoreIds?.indexOf(+value)
-      selectedChoreIdsCopy?.splice(valueIdx, 1)
-      setSelectedChoreIds(selectedChoreIdsCopy)
-    }
+    const newSelectedValues = handleCheckboxSelectedValues(
+      selectedChoreIds?.includes(+value),
+      selectedChoreIds,
+      +value
+    )
+    setSelectedChoreIds(newSelectedValues)
   }
 
   const createModalDataComponents = () => {

@@ -42,10 +42,16 @@ const HeaderSortFilterActions = ({ handleSort, mobileFilterButton }: Props) => {
 
   return (
     <>
-      <div className='flex items-end'>
+      <div className='flex items-center'>
         <Menu as='div' className='relative inline-block text-left'>
           <div>
-            <Menu.Button className='group inline-flex justify-center text-sm font-medium text-white hover:text-gray-800'>
+            <Menu.Button
+              className={[
+                'group inline-flex justify-center text-sm font-medium',
+                // 'text-gray-700 hover:text-gray-900',
+                'text-white hover:text-gray-800',
+              ].join(' ')}
+            >
               Sort
               <Icon icon='chevronDown' size='lg' customIconStyle='ml-1' />
             </Menu.Button>

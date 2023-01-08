@@ -61,18 +61,39 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
   }
 
   const setPersistentFilters = (filterKey: ModifierFilterTypes, value: number) => {
+    const currentFilterValues = getStorageFilterValues(filterKey)
     let newModifiersInput: ModifiersInputType = { ...getStorageModifiers() }
     let modifiersCopy: QueryModifierType = { ...newModifiersInput.modifiers }
     let filtersCopy: FilterOptionsType = { ...modifiersCopy.filters }
     let targetFilterValues: number[] = [...filtersCopy?.[filterKey]]
 
-    const newFilterValues: number[] = [...targetFilterValues, value]
-    filtersCopy[filterKey] = newFilterValues
-    modifiersCopy.filters = filtersCopy
-    newModifiersInput.modifiers = modifiersCopy
+    if (currentFilterValues?.includes(value)) {
+      const valueIdx = currentFilterValues?.indexOf(value)
+      targetFilterValues?.splice(valueIdx, 1)
 
-    setStorageModifiers(newModifiersInput)
-    return newModifiersInput
+      filtersCopy[filterKey] = targetFilterValues
+      modifiersCopy.filters = filtersCopy
+      newModifiersInput.modifiers = modifiersCopy
+
+      setStorageModifiers(newModifiersInput)
+      return { modifiers: newModifiersInput, action: 'splice' }
+    } else {
+      const newFilterValues: number[] = [...targetFilterValues, value]
+      filtersCopy[filterKey] = newFilterValues
+      modifiersCopy.filters = filtersCopy
+      newModifiersInput.modifiers = modifiersCopy
+
+      setStorageModifiers(newModifiersInput)
+      return { modifiers: newModifiersInput, action: 'push' }
+    }
+  }
+
+  const getStorageFilterValues = (target: ModifierFilterTypes) => {
+    return getStorageModifiers().modifiers?.filters?.[target]
+  }
+
+  const resetStorageFilters = () => {
+    setStorageModifiers(initialValues)
   }
 
   return {
@@ -81,6 +102,8 @@ const usePersistentModifiers = (initialValues: ModifiersInputType = null) => {
     setStorageModifiers,
     getStorageModifiers,
     setPersistentFilters,
+    getStorageFilterValues,
+    resetStorageFilters,
   }
 }
 

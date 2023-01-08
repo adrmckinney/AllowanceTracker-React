@@ -16,6 +16,9 @@ export type ModifierFilterTypes =
   | 'transactionUserId'
   | 'choreStatuses'
   | 'transferStatuses'
+  | 'chores'
+  | 'users'
+  | 'approvers'
   | ''
 
 const filterOptions: FilterOptionsType = {
@@ -27,6 +30,9 @@ const filterOptions: FilterOptionsType = {
   transactionUserId: null,
   choreStatuses: [],
   transferStatuses: [],
+  chores: [],
+  users: [],
+  approvers: [],
 }
 
 export const defaultQueryModifiers: QueryModifierType = {
